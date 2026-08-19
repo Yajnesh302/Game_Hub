@@ -1,0 +1,11 @@
+{
+  "id": "sample-space-dodger",
+  "title": "Space Dodger",
+  "description": "Retro sci-fi arcade dodger. Pilot your spaceship through asteroid belts, blast orbital obstacles with plasma cannons, and rack up high scores!",
+  "author": "Game Hub Studio",
+  "version": "1.0",
+  "thumbnail": "icon.svg",
+  "entry": "index.html",
+  "category": "Arcade",
+  "supportsLeaderboard": true
+}

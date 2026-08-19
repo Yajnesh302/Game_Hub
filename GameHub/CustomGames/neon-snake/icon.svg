@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 190" fill="none">
+  <rect width="340" height="190" fill="#030712"/>
+  <!-- Neon Grid -->
+  <line x1="30" y1="50" x2="310" y2="50" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6,6"/>
+  <line x1="30" y1="95" x2="310" y2="95" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6,6"/>
+  <line x1="30" y1="140" x2="310" y2="140" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6,6"/>
+  <line x1="90" y1="20" x2="90" y2="170" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6,6"/>
+  <line x1="170" y1="20" x2="170" y2="170" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6,6"/>
+  <line x1="250" y1="20" x2="250" y2="170" stroke="#1e293b" stroke-width="1.5" stroke-dasharray="6,6"/>
+
+  <!-- Energy Orb Food -->
+  <circle cx="250" cy="50" r="14" fill="#ec4899" opacity="0.3" filter="blur(6px)"/>
+  <circle cx="250" cy="50" r="8" fill="#f43f5e" stroke="#fb7185" stroke-width="2"/>
+
+  <!-- Snake Glow Body -->
+  <path d="M 70,140 L 170,140 L 170,95 L 210,95 L 210,50 L 230,50" fill="none" stroke="#10b981" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" opacity="0.3" filter="blur(5px)"/>
+  
+  <!-- Snake Solid Body -->
+  <path d="M 70,140 L 170,140 L 170,95 L 210,95 L 210,50 L 230,50" fill="none" stroke="#34d399" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Snake Head -->
+  <circle cx="230" cy="50" r="8" fill="#10b981" stroke="#6ee7b7" stroke-width="2"/>
+  <circle cx="232" cy="47" r="2" fill="#030712"/>
+</svg>

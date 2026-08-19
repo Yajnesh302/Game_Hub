@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 190" fill="none">
+  <rect width="340" height="190" fill="#050814"/>
+  <!-- Stars -->
+  <circle cx="45" cy="30" r="1.5" fill="#f8fafc" opacity="0.8"/>
+  <circle cx="120" cy="70" r="1" fill="#f8fafc" opacity="0.5"/>
+  <circle cx="280" cy="40" r="1.5" fill="#f8fafc" opacity="0.9"/>
+  <circle cx="230" cy="140" r="1" fill="#f8fafc" opacity="0.6"/>
+  <circle cx="90" cy="150" r="1.5" fill="#f8fafc" opacity="0.7"/>
+
+  <!-- Nebula Glow -->
+  <circle cx="170" cy="95" r="70" fill="#8b5cf6" opacity="0.15" filter="blur(20px)"/>
+
+  <!-- Flying Asteroids -->
+  <circle cx="95" cy="80" r="18" fill="#334155" stroke="#475569" stroke-width="2"/>
+  <circle cx="245" cy="65" r="14" fill="#334155" stroke="#475569" stroke-width="2"/>
+  <circle cx="220" cy="130" r="22" fill="#1e293b" stroke="#334155" stroke-width="2"/>
+
+  <!-- Spaceship -->
+  <g transform="translate(170, 110)">
+    <!-- Plasma Thruster Flame -->
+    <polygon points="-6,20 6,20 0,34" fill="#f97316"/>
+    <polygon points="-3,20 3,20 0,28" fill="#facc15"/>
+    
+    <!-- Wings & Hull -->
+    <polygon points="0,-25 18,18 0,10 -18,18" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <polygon points="0,-18 7,6 0,2 -7,6" fill="#38bdf8"/>
+    
+    <!-- Laser Cannons -->
+    <line x1="-16" y1="12" x2="-16" y2="-4" stroke="#a855f7" stroke-width="2.5"/>
+    <line x1="16" y1="12" x2="16" y2="-4" stroke="#a855f7" stroke-width="2.5"/>
+    <line x1="-16" y1="-8" x2="-16" y2="-22" stroke="#ec4899" stroke-width="2" opacity="0.9"/>
+    <line x1="16" y1="-8" x2="16" y2="-22" stroke="#ec4899" stroke-width="2" opacity="0.9"/>
+  </g>
+</svg>

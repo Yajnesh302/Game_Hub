@@ -1,0 +1,30 @@
+{
+  "sample-space-dodger": {
+    "Id": "sample-space-dodger",
+    "Title": "Space Dodger",
+    "Description": "Retro sci-fi arcade dodger. Pilot your spaceship through asteroid belts, blast orbital obstacles with plasma cannons, and rack up high scores!",
+    "Author": "Game Hub Studio",
+    "Version": "1.0",
+    "Thumbnail": "icon.svg",
+    "Entry": "index.html",
+    "Category": "Arcade",
+    "SupportsLeaderboard": true,
+    "InstalledAt": "2026-08-19T18:35:19.2791342Z",
+    "DirectoryPath": "E:\\Game\\GameHub\\CustomGames\\sample-space-dodger",
+    "RelativeUrl": "CustomGames/sample-space-dodger/index.html"
+  },
+  "neon-snake": {
+    "Id": "neon-snake",
+    "Title": "Neon Snake Retro",
+    "Description": "Classic cyber arcade snake. Slither through the neon grid, consume energy power orbs, grow your cyber tail, and achieve the ultimate high score!",
+    "Author": "Cyber Retro Studio",
+    "Version": "1.0",
+    "Thumbnail": "icon.svg",
+    "Entry": "index.html",
+    "Category": "Arcade",
+    "SupportsLeaderboard": true,
+    "InstalledAt": "2026-08-19T18:43:14.0839635Z",
+    "DirectoryPath": "E:\\Game\\GameHub\\CustomGames\\neon-snake",
+    "RelativeUrl": "CustomGames/neon-snake/index.html"
+  }
+}

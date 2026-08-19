@@ -1,0 +1,11 @@
+{
+  "id": "neon-snake",
+  "title": "Neon Snake Retro",
+  "description": "Classic cyber arcade snake. Slither through the neon grid, consume energy power orbs, grow your cyber tail, and achieve the ultimate high score!",
+  "author": "Cyber Retro Studio",
+  "version": "1.0",
+  "thumbnail": "icon.svg",
+  "entry": "index.html",
+  "category": "Arcade",
+  "supportsLeaderboard": true
+}
