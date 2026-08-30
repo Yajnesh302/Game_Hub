@@ -1,0 +1,12 @@
+{
+  "id": "sample-pong-duel",
+  "title": "Neon Pong Duel",
+  "description": "Fast-paced 2-Player LAN multiplayer neon pong. Challenge any player online over your local intranet!",
+  "author": "Game Hub Studio",
+  "version": "1.0.0",
+  "category": "Action",
+  "entry": "index.html",
+  "thumbnail": "icon.svg",
+  "isMultiplayer": true,
+  "supportsLeaderboard": false
+}

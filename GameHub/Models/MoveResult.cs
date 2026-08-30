@@ -29,6 +29,8 @@ namespace GameHub.Models
         public Player FromPlayer { get; set; }
         public Player ToPlayer { get; set; }
         public GameType GameType { get; set; }
+        public string CustomGameId { get; set; }
+        public string CustomGameTitle { get; set; }
         public System.DateTime CreatedAt { get; set; }
 
         public InviteRequest()

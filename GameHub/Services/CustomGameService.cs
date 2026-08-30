@@ -305,9 +305,33 @@ namespace GameHub.Services
             lock (_lockObj)
             {
                 CustomGameManifest manifest;
-                if (_registry.TryGetValue(gameId, out manifest))
+                if (_registry.TryGetValue(gameId.Trim(), out manifest))
                 {
                     return manifest;
+                }
+
+                // If not found, rescan filesystem in case newly added
+                ScanAndSyncDirectories();
+                if (_registry.TryGetValue(gameId.Trim(), out manifest))
+                {
+                    return manifest;
+                }
+
+                // Fallback: look for normalized or case-insensitive match
+                string cleanId = SanitizeId(gameId);
+                if (_registry.TryGetValue(cleanId, out manifest))
+                {
+                    return manifest;
+                }
+
+                foreach (var kvp in _registry)
+                {
+                    if (string.Equals(kvp.Key, gameId, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(kvp.Value.Id, gameId, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(kvp.Value.Title, gameId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return kvp.Value;
+                    }
                 }
             }
             return null;

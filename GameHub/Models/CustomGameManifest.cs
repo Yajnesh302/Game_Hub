@@ -13,6 +13,8 @@ namespace GameHub.Models
         public string Entry { get; set; }     // e.g. "index.html"
         public string Category { get; set; }  // e.g. "Arcade", "Puzzle", "Action"
         public bool SupportsLeaderboard { get; set; }
+        public bool IsMultiplayer { get; set; }
+        public bool SupportsMultiplayer { get { return IsMultiplayer; } set { IsMultiplayer = value; } }
         public DateTime InstalledAt { get; set; }
         public string DirectoryPath { get; set; }
         public string RelativeUrl { get; set; }

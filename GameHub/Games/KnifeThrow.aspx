@@ -80,6 +80,20 @@
             touch-action: none;
         }
 
+        .knifethrow-heart-icon {
+            transition: all 0.25s ease;
+        }
+
+        .knifethrow-heart-active {
+            filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.8));
+            animation: heartPulse 1.8s infinite ease-in-out;
+        }
+
+        @keyframes heartPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.12); }
+        }
+
         .knifethrow-stack-hud {
             display: flex;
             align-items: center;
@@ -128,6 +142,12 @@
                         <div class="knifethrow-stat-item">
                             <span class="knifethrow-stat-label">Stage</span>
                             <span class="knifethrow-stat-val" id="current-level" style="color: #34d399;">1</span>
+                        </div>
+                        <div class="knifethrow-stat-item">
+                            <span class="knifethrow-stat-label">Lives</span>
+                            <div id="knifethrow-lives-container" style="display: flex; gap: 4px; align-items: center; min-height: 24px;">
+                                <!-- Populated dynamically via JS -->
+                            </div>
                         </div>
                     </div>
 

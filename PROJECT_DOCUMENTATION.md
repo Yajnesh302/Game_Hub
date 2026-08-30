@@ -34,7 +34,7 @@
 
 **Game Hub** is a self-hosted, fully offline intranet gaming platform. It provides:
 
-- **9 built-in games** — 6 multiplayer (LAN vs LAN) + 3 single-player, all with Vs Bot mode.
+- **18 built-in games** — 15 multiplayer (LAN vs LAN) + 3 single-player high-score games, all with Vs Bot / Solo training modes.
 - **Real-time LAN matchmaking** — players on the same network can see each other, challenge each other directly, or join a matchmaking queue.
 - **Custom game plugin system** — any developer can package an HTML5 game as a `.zip` file and upload it through the browser UI without redeploying the server.
 - **Unified leaderboard** — win/loss/draw records tracked live for all multiplayer games. Per-game high-score boards for single-player games.
@@ -928,6 +928,87 @@ Score stored in App_Data/custom_scores.json
 - **Draw offer / Resign:** With confirmation dialogs
 - **Board flip:** Black player auto-flipped; manual button available
 - **Bot:** Minimax + alpha-beta + piece-square tables; 3 difficulty levels
+
+### Speed Math Arena
+- **Type:** Rapid-fire arithmetic reaction duel & mental math training
+- **Operations:** Addition, Subtraction, Multiplication, Division, and Mixed All-Operations
+- **Difficulty:** Easy (1-digit / basic math), Medium (2-digit arithmetic), Hard (Algebraic mental sprints)
+- **Mechanics:** 60-second synchronized timer, streak multipliers, instant input validation, live opponent score telemetry radar
+- **Multiplayer:** Both players receive identical equation sequence via deterministic seed
+
+### Sling Puck Frenzy
+- **Type:** 2D physics wooden tabletop fast-track puck duel
+- **Physics Engine:** Rigid-body circle collisions, elastic bungee cords with quadratic tension recoil, rounded slot bumpers
+- **Goal:** Clear your home arena by slinging all 5 pucks through the narrow center divider slot into the opponent's zone
+- **Multiplayer:** Bidirectional impulse broadcasting (`{ action: 'shoot' }`), live drag coordinate sync, and host physics reconciliation
+- **Bot AI:** Aim prediction targeting open gate slots with dynamic charge power
+
+### Dots & Boxes Championship
+- **Type:** Classic graph-theoretic territory capture & combinatorics strategy
+- **Grid Options:** 3×3 (9 boxes), 4×4 (16 boxes), 5×5 (25 boxes)
+- **Mechanics:** Magnetic edge snapping, neon laser beam line drawing, box completion detections, chain combo bonuses (`🔥 EXTRA TURN!`)
+- **Multiplayer:** Fully server-authoritative turn-based state machine with box ownership grids
+- **Bot AI:** Minimax evaluation avoiding 3-sided sacrifice boxes and maximizing capture streaks
+
+### Codebreaker: Cyber Cipher (Mastermind)
+- **Type:** Deductive logic & codebreaking cipher puzzle
+- **Palette:** 6 to 8 vibrant cyber gems (Ruby, Sapphire, Emerald, Solar Yellow, Amethyst, Pearl White, Tangerine, Pink)
+- **Clues:** 🔴 Exact Key (correct color & correct slot), ⚪ Color Key (correct color in different slot), ⬛ Empty (no match)
+- **Matching Algorithm:** Two-pass multi-instance frequency matching (prevents double-counting duplicate colors)
+- **Modes:** Easy (4 slots, no duplicates, 10 tries), Medium (4 slots, standard, 9 tries), Hard (5 slots, 8 colors, 8 tries)
+- **Multiplayer:** Simultaneous secret cipher sprint with live opponent row telemetry radar; automatic cipher reveal on match completion
+
+### Memory Matrix: Cyber Recall
+- **Type:** Visual working memory & spatial mental rotation
+- **Grid Scaling:** Dynamic matrix scaling from 3×3 (3 nodes) up to 6×6 (12 nodes)
+- **Transformations:** 90° and 180° spatial rotation transforms between memorization flash phase and dark recall phase
+- **Mechanics:** 3 Neural Shields (Lives), speed bonus precision scoring, combo streak multipliers, missed node highlight reveals
+- **Multiplayer:** Simultaneous sudden-death neural showdown with live shield and stage telemetry
+
+### Laser & Mirrors: Photon Flow
+- **Type:** Spatial logic & optical raytracing puzzle
+- **Optics Engine:** Real-time continuous 2D raycasting with multi-pass neon bloom on HTML5 Canvas
+- **Elements:**
+  - Laser Emitters (North, South, East, West with wavelength hues)
+  - Diagonal Planar Mirrors (`/` and `\`) with 90° reflection geometry
+  - Beam Splitters (Prisms) splitting single beams into perpendicular dual rays
+  - Obsidian Wall Absorbers
+  - Wormhole Portal Gateways
+- **Stages:** 20 progressive handcrafted optical chambers across 4 tiers (Apprentice, Prism Division, Chromatics, Quantum Master) with 3-Star efficiency ratings
+- **Multiplayer:** Simultaneous LAN photon sprint duel with live crystal illumination telemetry radar
+
+### AlgoBot: Maze Runner & Pathfinding
+- **Type:** Algorithmic thinking & visual programming puzzle
+- **Virtual Machine:** Modular instruction pipeline with call stack interpreter supporting `MAIN[]`, Subroutines `F1[]` and `F2[]`, and tail-recursion
+- **Instruction Set:** `MOVE`, `TURN_L`, `TURN_R`, `JUMP`, `ACTIVATE`, `CALL_F1`, `CALL_F2`
+- **Features:** Line-by-line step-through debugger (`▶`, `⏭️`, `↺`), dynamic speed scaling ($1\times, 2\times, 4\times$), interactive switches, laser gates, and hazard avoidance
+- **Stages:** 100 progressive algorithmic chambers across 5 tiers (Fundamentals, DRY Loops & F1, Dual Subroutines & Recursion, Dynamic Gate Networks, Grandmaster Turing Challenges) with 3-Star instruction efficiency ratings and Tier-filtered Stage Selector (1–100)
+- **Multiplayer:** Live algorithmic sprint duel with real-time instruction count and chip harvest telemetry
+
+### Wordle / Word Duel Arena
+- **Type:** Deductive vocabulary & logic puzzle (`GameType.WordDuel = 17`)
+- **Core Mechanics:** 6 attempts to deduce a hidden 5-letter English word. Color-coded feedback on letter tiles:
+  - 🟩 **Green (Correct)**: Letter is in the word and in the correct spot.
+  - 🟨 **Yellow (Present)**: Letter is in the word but in the wrong spot.
+  - ⬛ **Gray (Absent)**: Letter is not in the word.
+- **Offline Vocabulary:** 100% offline bundled dictionary with ~1,200+ curated high-frequency secret words and ~10,000+ valid guess words.
+- **Features:** 3D perspective tile flip animations, pop scaling, row shake on non-dictionary words, victory dance, and on-screen interactive QWERTY keyboard with real-time letter key color states.
+- **Game Modes:**
+  - **Solo Mode**: Infinite random words + streak tracker + guess distribution analytics histogram.
+  - **Hard Mode**: Any revealed green/yellow hints must be strictly used in subsequent guesses.
+  - **LAN Word Duel**: Simultaneous live sprint where both players receive the identical secret word seed, featuring a live opponent telemetry radar displaying anonymized colored guess blocks (`🟩🟨⬛`).
+
+### Lights Out: Quantum Switch
+- **Type:** Grid Inversion & Parity Mathematical Puzzle (`GameType.LightsOut = 18`)
+- **Core Mechanics:** Turn OFF all glowing quantum light nodes. Clicking any node inverts its state and all adjacent neighbors over Galois Field $\mathbb{Z}_2$.
+- **Linear Algebra Solver:** Built-in Galois Field $\text{GF}(2)$ Gaussian elimination matrix solver ($A \cdot x = b \pmod 2$) providing real-time mathematical hints and calculating exact Par moves.
+- **Topological & Quantum Modes:**
+  - **Classic Cross ($+$)**: Traditional N, S, E, W neighbor inversion.
+  - **Superposition Diagonal ($X$)**: Inverts diagonal NW, NE, SW, SE neighbors.
+  - **Torus Topology (Wrap-Around)**: Border energy conduits wrap continuously across opposing edges.
+  - **Matrix Dimensions**: $3 \times 3$, $4 \times 4$, $5 \times 5$, and $6 \times 6$ grids.
+- **Stages:** 50 progressive handcrafted parity chambers across 5 tiers (Apprentice Core, Parity Symmetry, Torus Topology, Superposition Diagonal, Grandmaster Turing Singularity) with 3-Star efficiency ratings and Tier-filtered Stage Selector (1–50).
+- **Multiplayer:** Live quantum sprint duel with real-time opponent light count and mini-matrix telemetry radar.
 
 ---
 

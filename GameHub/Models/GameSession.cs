@@ -7,6 +7,7 @@ namespace GameHub.Models
     {
         public string SessionId { get; set; }
         public GameType GameType { get; set; }
+        public string CustomGameId { get; set; }
         public Player Player1 { get; set; }
         public Player Player2 { get; set; }
         public string CurrentTurnPlayerId { get; set; }
@@ -56,6 +57,77 @@ namespace GameHub.Models
         public List<string> ChessCapturedBlack { get; set; }
         public string ChessDrawOfferedBy { get; set; }
 
+        // Speed Math Real-time State
+        public int MathSeed { get; set; }
+        public int Player1MathScore { get; set; }
+        public int Player2MathScore { get; set; }
+        public int Player1MathAnswered { get; set; }
+        public int Player2MathAnswered { get; set; }
+        public int Player1MathStreak { get; set; }
+        public int Player2MathStreak { get; set; }
+        public string MathOperation { get; set; }
+        public string MathDifficulty { get; set; }
+
+        // Dots and Boxes Turn-based State
+        public int DotsGridSize { get; set; }
+        public bool[,] DotsHozLines { get; set; }
+        public bool[,] DotsVertLines { get; set; }
+        public int[,] DotsBoxes { get; set; }
+        public int Player1Boxes { get; set; }
+        public int Player2Boxes { get; set; }
+
+        // Codebreaker / Mastermind State
+        public int CodebreakerSeed { get; set; }
+        public string CodebreakerDifficulty { get; set; }
+        public int Player1CodebreakerAttempts { get; set; }
+        public int Player2CodebreakerAttempts { get; set; }
+        public bool Player1CodebreakerSolved { get; set; }
+        public bool Player2CodebreakerSolved { get; set; }
+
+        // Memory Matrix State
+        public int MemorySeed { get; set; }
+        public int MemoryLevel { get; set; }
+        public int Player1MemoryScore { get; set; }
+        public int Player2MemoryScore { get; set; }
+        public int Player1MemoryLives { get; set; }
+        public int Player2MemoryLives { get; set; }
+
+        // Laser & Mirrors State
+        public int LaserLevel { get; set; }
+        public int LaserSeed { get; set; }
+        public int Player1LaserCrystals { get; set; }
+        public int Player2LaserCrystals { get; set; }
+        public bool Player1LaserSolved { get; set; }
+        public bool Player2LaserSolved { get; set; }
+
+        // AlgoBot State
+        public int AlgoLevel { get; set; }
+        public int AlgoSeed { get; set; }
+        public int Player1AlgoChips { get; set; }
+        public int Player2AlgoChips { get; set; }
+        public bool Player1AlgoSolved { get; set; }
+        public bool Player2AlgoSolved { get; set; }
+
+        // Wordle / Word Duel State
+        public int WordDuelSeed { get; set; }
+        public string WordDuelTargetWord { get; set; }
+        public int WordDuelLength { get; set; }
+        public int Player1WordAttempts { get; set; }
+        public int Player2WordAttempts { get; set; }
+        public bool Player1WordSolved { get; set; }
+        public bool Player2WordSolved { get; set; }
+
+        // Lights Out / Quantum Switch State
+        public int LightsOutSeed { get; set; }
+        public int LightsOutGridSize { get; set; }
+        public string LightsOutMode { get; set; }
+        public int Player1LightsRemaining { get; set; }
+        public int Player2LightsRemaining { get; set; }
+        public int Player1LightsMoves { get; set; }
+        public int Player2LightsMoves { get; set; }
+        public bool Player1LightsSolved { get; set; }
+        public bool Player2LightsSolved { get; set; }
+
         // Rematch flags
         public bool Player1WantsRematch { get; set; }
         public bool Player2WantsRematch { get; set; }
@@ -74,6 +146,20 @@ namespace GameHub.Models
             ChessCapturedWhite = new List<string>();
             ChessCapturedBlack = new List<string>();
             ChessFen = DEFAULT_CHESS_FEN;
+            MathSeed = new Random().Next(100000, 999999);
+            MathOperation = "mix";
+            MathDifficulty = "medium";
+            DotsGridSize = 4;
+            CodebreakerSeed = new Random().Next(100000, 999999);
+            CodebreakerDifficulty = "medium";
+            MemorySeed = new Random().Next(100000, 999999);
+            MemoryLevel = 1;
+            Player1MemoryLives = 3;
+            Player2MemoryLives = 3;
+            LaserLevel = 1;
+            LaserSeed = new Random().Next(100000, 999999);
+            AlgoLevel = 1;
+            AlgoSeed = new Random().Next(100000, 999999);
         }
 
         public GameSession(GameType gameType, Player p1, Player p2) : this()
@@ -84,6 +170,11 @@ namespace GameHub.Models
             Status = SessionStatus.InProgress;
             CurrentTurnPlayerId = p1 != null ? p1.ConnectionId : null;
             InitBoard();
+        }
+
+        public GameSession(GameType gameType, Player p1, Player p2, string customGameId) : this(gameType, p1, p2)
+        {
+            CustomGameId = customGameId;
         }
 
         public void InitBoard()
@@ -145,6 +236,66 @@ namespace GameHub.Models
                     ChessCapturedBlack = new List<string>();
                     ChessDrawOfferedBy = null;
                     CurrentTurnPlayerId = Player1 != null ? Player1.ConnectionId : null; // White goes first (Player 1)
+                    break;
+
+                case GameType.SpeedMath:
+                    MathSeed = new Random().Next(100000, 999999);
+                    Player1MathScore = 0;
+                    Player2MathScore = 0;
+                    Player1MathAnswered = 0;
+                    Player2MathAnswered = 0;
+                    Player1MathStreak = 0;
+                    Player2MathStreak = 0;
+                    break;
+
+                case GameType.SlingPuck:
+                    Player1Score = 0;
+                    Player2Score = 0;
+                    break;
+
+                case GameType.DotsAndBoxes:
+                    if (DotsGridSize < 3 || DotsGridSize > 6) DotsGridSize = 4;
+                    DotsHozLines = new bool[DotsGridSize + 1, DotsGridSize];
+                    DotsVertLines = new bool[DotsGridSize, DotsGridSize + 1];
+                    DotsBoxes = new int[DotsGridSize, DotsGridSize];
+                    Player1Boxes = 0;
+                    Player2Boxes = 0;
+                    CurrentTurnPlayerId = Player1 != null ? Player1.ConnectionId : null;
+                    break;
+
+                case GameType.Codebreaker:
+                    CodebreakerSeed = new Random().Next(100000, 999999);
+                    Player1CodebreakerAttempts = 0;
+                    Player2CodebreakerAttempts = 0;
+                    Player1CodebreakerSolved = false;
+                    Player2CodebreakerSolved = false;
+                    break;
+
+                case GameType.MemoryMatrix:
+                    MemorySeed = new Random().Next(100000, 999999);
+                    MemoryLevel = 1;
+                    Player1MemoryScore = 0;
+                    Player2MemoryScore = 0;
+                    Player1MemoryLives = 3;
+                    Player2MemoryLives = 3;
+                    break;
+
+                case GameType.LaserMirrors:
+                    LaserSeed = new Random().Next(100000, 999999);
+                    LaserLevel = 1;
+                    Player1LaserCrystals = 0;
+                    Player2LaserCrystals = 0;
+                    Player1LaserSolved = false;
+                    Player2LaserSolved = false;
+                    break;
+
+                case GameType.AlgoBot:
+                    AlgoSeed = new Random().Next(100000, 999999);
+                    AlgoLevel = 1;
+                    Player1AlgoChips = 0;
+                    Player2AlgoChips = 0;
+                    Player1AlgoSolved = false;
+                    Player2AlgoSolved = false;
                     break;
             }
         }

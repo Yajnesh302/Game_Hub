@@ -560,6 +560,655 @@
                 </div>
             </div>
         </div>
+
+        <!-- Game 10: Speed Math Arena (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-speedmath">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #38bdf8;">Math &amp; Speed</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#060b18"/>
+                    
+                    <!-- Background Math Grid -->
+                    <circle cx="170" cy="95" r="70" stroke="rgba(56,189,248,0.15)" stroke-width="2"/>
+                    <circle cx="170" cy="95" r="45" stroke="rgba(56,189,248,0.25)" stroke-width="2" stroke-dasharray="6,6"/>
+
+                    <!-- Floating Math Symbols -->
+                    <!-- + (Addition) -->
+                    <g transform="translate(60, 50)">
+                        <rect x="0" y="8" width="24" height="6" rx="3" fill="#38bdf8"/>
+                        <rect x="9" y="-1" width="6" height="24" rx="3" fill="#38bdf8"/>
+                    </g>
+                    <!-- − (Subtraction) -->
+                    <g transform="translate(255, 55)">
+                        <rect x="0" y="8" width="24" height="6" rx="3" fill="#f43f5e"/>
+                    </g>
+                    <!-- × (Multiplication) -->
+                    <g transform="translate(65, 135) rotate(45)">
+                        <rect x="0" y="8" width="22" height="6" rx="3" fill="#fbbf24"/>
+                        <rect x="8" y="0" width="6" height="22" rx="3" fill="#fbbf24"/>
+                    </g>
+                    <!-- ÷ (Division) -->
+                    <g transform="translate(255, 125)">
+                        <circle cx="12" cy="0" r="3.5" fill="#34d399"/>
+                        <rect x="0" y="8" width="24" height="5" rx="2.5" fill="#34d399"/>
+                        <circle cx="12" cy="21" r="3.5" fill="#34d399"/>
+                    </g>
+
+                    <!-- Center Equation Neon Display -->
+                    <rect x="90" y="65" width="160" height="60" rx="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2.5" filter="drop-shadow(0 0 16px rgba(56,189,248,0.3))"/>
+                    <text x="170" y="103" font-family="Outfit, sans-serif" font-weight="900" font-size="22" fill="#f8fafc" text-anchor="middle">48 × 16 = <tspan fill="#38bdf8">?</tspan></text>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Speed Math Arena</h2>
+                <p class="game-desc">High-octane mental arithmetic race. Practice Addition, Subtraction, Multiplication &amp; Division across Easy, Medium, Hard with 60s Blitz, 10-Q Sprint, Survival Streak, and LAN duels.</p>
+                <div class="game-controls">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                        <div class="difficulty-select-wrapper">
+                            <span class="difficulty-label">Operation:</span>
+                            <select class="difficulty-select" id="op-speedmath">
+                                <option value="mix" selected="selected">🎲 Mixed All</option>
+                                <option value="add">➕ Addition</option>
+                                <option value="sub">➖ Subtraction</option>
+                                <option value="mul">✖️ Multiply</option>
+                                <option value="div">➗ Division</option>
+                            </select>
+                        </div>
+                        <div class="difficulty-select-wrapper">
+                            <span class="difficulty-label">Difficulty:</span>
+                            <select class="difficulty-select" id="diff-speedmath">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected="selected">Medium</option>
+                                <option value="hard">Hard (Master)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="speedmath">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="10">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 11: Sling Puck Frenzy (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-slingpuck">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #fbbf24;">Tabletop &amp; Reflex</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#060b18"/>
+                    
+                    <!-- Table Rim Border -->
+                    <rect x="25" y="20" width="290" height="150" rx="12" fill="#0f172a" stroke="#334155" stroke-width="3"/>
+
+                    <!-- Elastic Bungee Slings -->
+                    <path d="M50 30 Q 38 95 50 160" stroke="#38bdf8" stroke-width="3" fill="none"/>
+                    <path d="M290 30 Q 302 95 290 160" stroke="#f43f5e" stroke-width="3" fill="none"/>
+
+                    <!-- Center Divider & Gate Slot -->
+                    <rect x="166" y="20" width="8" height="50" fill="#475569"/>
+                    <rect x="166" y="120" width="8" height="50" fill="#475569"/>
+                    <circle cx="170" cy="70" r="4" fill="#fbbf24"/>
+                    <circle cx="170" cy="120" r="4" fill="#fbbf24"/>
+
+                    <!-- Cyan Pucks (Left) -->
+                    <circle cx="95" cy="65" r="10" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+                    <circle cx="115" cy="135" r="10" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+                    <circle cx="70" cy="100" r="10" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+
+                    <!-- Flying Slingshot Puck through Gate -->
+                    <path d="M50 95 Q 110 95 160 95" stroke="rgba(56,189,248,0.4)" stroke-width="2" stroke-dasharray="3,3"/>
+                    <circle cx="160" cy="95" r="10" fill="#ffffff" stroke="#38bdf8" stroke-width="2" filter="drop-shadow(0 0 10px #38bdf8)"/>
+
+                    <!-- Rose Pucks (Right) -->
+                    <circle cx="245" cy="65" r="10" fill="#be123c" stroke="#f43f5e" stroke-width="2"/>
+                    <circle cx="225" cy="135" r="10" fill="#be123c" stroke="#f43f5e" stroke-width="2"/>
+                    <circle cx="270" cy="100" r="10" fill="#be123c" stroke="#f43f5e" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Sling Puck Frenzy</h2>
+                <p class="game-desc">Fast-sling tabletop action. Stretch the elastic bungee cord, aim through the narrow center divider gate, and clear all 10 pucks from your court to win!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Bot Level:</span>
+                        <select class="difficulty-select" id="diff-slingpuck">
+                            <option value="easy">Easy (Casual)</option>
+                            <option value="medium" selected="selected">Medium (Agile)</option>
+                            <option value="hard">Hard (Championship Pro)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="slingpuck">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Bot
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="11">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 12: Dots & Boxes Championship (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-dotsandboxes">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #fbbf24;">Turn-Based Strategy</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#060b18"/>
+                    
+                    <!-- Board Outer Box -->
+                    <rect x="45" y="20" width="250" height="150" rx="8" fill="#0b1120" stroke="#1e293b" stroke-width="2"/>
+
+                    <!-- Completed Box 1 (Cyan P1) -->
+                    <rect x="110" y="55" width="60" height="40" rx="4" fill="rgba(56, 189, 248, 0.25)" stroke="#38bdf8" stroke-width="1.5"/>
+                    <text x="140" y="80" fill="#38bdf8" font-size="14" font-weight="900" font-family="Outfit, sans-serif" text-anchor="middle">P1</text>
+
+                    <!-- Completed Box 2 (Rose P2) -->
+                    <rect x="170" y="95" width="60" height="40" rx="4" fill="rgba(244, 63, 94, 0.25)" stroke="#f43f5e" stroke-width="1.5"/>
+                    <text x="200" y="120" fill="#f43f5e" font-size="14" font-weight="900" font-family="Outfit, sans-serif" text-anchor="middle">P2</text>
+
+                    <!-- Drawn Laser Lines -->
+                    <line x1="110" y1="55" x2="170" y2="55" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #38bdf8)"/>
+                    <line x1="110" y1="95" x2="170" y2="95" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #38bdf8)"/>
+                    <line x1="110" y1="55" x2="110" y2="95" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #38bdf8)"/>
+                    <line x1="170" y1="55" x2="170" y2="95" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #38bdf8)"/>
+
+                    <line x1="170" y1="95" x2="230" y2="95" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #f43f5e)"/>
+                    <line x1="170" y1="135" x2="230" y2="135" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #f43f5e)"/>
+                    <line x1="170" y1="95" x2="170" y2="135" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #f43f5e)"/>
+                    <line x1="230" y1="95" x2="230" y2="135" stroke="#f8fafc" stroke-width="3.5" filter="drop-shadow(0 0 4px #f43f5e)"/>
+
+                    <!-- Glowing Preview Line -->
+                    <line x1="110" y1="95" x2="110" y2="135" stroke="#38bdf8" stroke-width="2.5" stroke-dasharray="4,4"/>
+
+                    <!-- 4x3 Dots Matrix -->
+                    <circle cx="110" cy="55" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                    <circle cx="170" cy="55" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                    <circle cx="230" cy="55" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+
+                    <circle cx="110" cy="95" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                    <circle cx="170" cy="95" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                    <circle cx="230" cy="95" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+
+                    <circle cx="110" cy="135" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                    <circle cx="170" cy="135" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                    <circle cx="230" cy="135" r="4.5" fill="#ffffff" stroke="#fbbf24" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Dots &amp; Boxes</h2>
+                <p class="game-desc">Classic grid territory game. Connect adjacent dots with lines to complete 4-sided boxes, trigger combo chain turns, and capture the grid!</p>
+                <div class="game-controls">
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px;">
+                        <div class="difficulty-select-wrapper" style="flex: 1;">
+                            <span class="difficulty-label">Grid:</span>
+                            <select class="difficulty-select" id="size-dots">
+                                <option value="3">3x3 (Fast)</option>
+                                <option value="4" selected="selected">4x4 (Standard)</option>
+                                <option value="5">5x5 (Tactical)</option>
+                            </select>
+                        </div>
+                        <div class="difficulty-select-wrapper" style="flex: 1;">
+                            <span class="difficulty-label">Bot:</span>
+                            <select class="difficulty-select" id="diff-dots">
+                                <option value="easy">Easy</option>
+                                <option value="medium" selected="selected">Medium</option>
+                                <option value="hard">Hard (Master)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="dots">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Bot
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="12">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 13: Codebreaker / Mastermind (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-codebreaker">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #c084fc;">Deductive Logic &amp; Cipher</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#060b18"/>
+                    
+                    <!-- Vault Panel -->
+                    <rect x="35" y="20" width="270" height="45" rx="8" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                    <text x="50" y="47" fill="#94a3b8" font-size="11" font-weight="800" font-family="Outfit, sans-serif">VAULT</text>
+                    <circle cx="120" cy="42" r="12" fill="#020617" stroke="#475569" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <circle cx="160" cy="42" r="12" fill="#020617" stroke="#475569" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <circle cx="200" cy="42" r="12" fill="#020617" stroke="#475569" stroke-width="1.5" stroke-dasharray="2,2"/>
+                    <circle cx="240" cy="42" r="12" fill="#020617" stroke="#475569" stroke-width="1.5" stroke-dasharray="2,2"/>
+
+                    <!-- Decryption Row 1 -->
+                    <rect x="35" y="75" width="270" height="42" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="1.5"/>
+                    <circle cx="55" cy="96" r="8" fill="#1e293b"/>
+                    <text x="55" y="100" fill="#94a3b8" font-size="10" font-weight="800" text-anchor="middle">1</text>
+                    <circle cx="100" cy="96" r="11" fill="#ef4444" filter="drop-shadow(0 0 4px #ef4444)"/>
+                    <circle cx="135" cy="96" r="11" fill="#3b82f6" filter="drop-shadow(0 0 4px #3b82f6)"/>
+                    <circle cx="170" cy="96" r="11" fill="#10b981" filter="drop-shadow(0 0 4px #10b981)"/>
+                    <circle cx="205" cy="96" r="11" fill="#f59e0b" filter="drop-shadow(0 0 4px #f59e0b)"/>
+                    <!-- Feedback Pegs -->
+                    <circle cx="250" cy="91" r="4" fill="#ef4444"/>
+                    <circle cx="265" cy="91" r="4" fill="#ef4444"/>
+                    <circle cx="250" cy="103" r="4" fill="#f8fafc"/>
+                    <circle cx="265" cy="103" r="4" fill="#1e293b"/>
+
+                    <!-- Active Row 2 -->
+                    <rect x="35" y="125" width="270" height="45" rx="6" fill="rgba(56,189,248,0.08)" stroke="#38bdf8" stroke-width="2" filter="drop-shadow(0 0 8px rgba(56,189,248,0.25))"/>
+                    <circle cx="55" cy="147" r="8" fill="#0284c7"/>
+                    <text x="55" y="151" fill="#ffffff" font-size="10" font-weight="800" text-anchor="middle">2</text>
+                    <circle cx="100" cy="147" r="11" fill="#ef4444" filter="drop-shadow(0 0 4px #ef4444)"/>
+                    <circle cx="135" cy="147" r="11" fill="#a855f7" filter="drop-shadow(0 0 4px #a855f7)"/>
+                    <circle cx="170" cy="147" r="11" fill="#10b981" filter="drop-shadow(0 0 4px #10b981)"/>
+                    <circle cx="205" cy="147" r="11" fill="#f97316" filter="drop-shadow(0 0 4px #f97316)"/>
+                    <!-- Feedback Pegs 4 exact -->
+                    <circle cx="250" cy="142" r="4" fill="#ef4444" filter="drop-shadow(0 0 3px #ef4444)"/>
+                    <circle cx="265" cy="142" r="4" fill="#ef4444" filter="drop-shadow(0 0 3px #ef4444)"/>
+                    <circle cx="250" cy="154" r="4" fill="#ef4444" filter="drop-shadow(0 0 3px #ef4444)"/>
+                    <circle cx="265" cy="154" r="4" fill="#ef4444" filter="drop-shadow(0 0 3px #ef4444)"/>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Codebreaker Cipher</h2>
+                <p class="game-desc">Mastermind deductive logic. Crack the hidden color cipher in limited attempts using feedback clues (🔴 exact spot, ⚪ correct color)!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Cipher Level:</span>
+                        <select class="difficulty-select" id="diff-codebreaker">
+                            <option value="easy">Easy (4 Pegs, No Dupes)</option>
+                            <option value="medium" selected="selected">Medium (4 Pegs, Standard)</option>
+                            <option value="hard">Hard (5 Pegs, 8 Colors)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="codebreaker">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="13">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 14: Memory Matrix (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-memorymatrix">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #38bdf8;">Visual Working Memory &amp; Recall</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#040814"/>
+                    
+                    <!-- Background Circuit Lines -->
+                    <path d="M20 95 H70 M270 95 H320 M170 10 V40 M170 150 V180" stroke="#1e293b" stroke-width="2" stroke-dasharray="4,4"/>
+                    
+                    <!-- 4x4 Matrix Frame -->
+                    <rect x="95" y="20" width="150" height="150" rx="12" fill="#0b1120" stroke="#334155" stroke-width="2" filter="drop-shadow(0 0 15px rgba(56,189,248,0.2))"/>
+                    
+                    <!-- Matrix Tiles (4x4) -->
+                    <!-- Row 1 -->
+                    <rect x="105" y="30" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="139" y="30" width="28" height="28" rx="6" fill="url(#mem-grad-active)" stroke="#7dd3fc" stroke-width="1.5" filter="drop-shadow(0 0 8px #38bdf8)"/>
+                    <rect x="173" y="30" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="207" y="30" width="28" height="28" rx="6" fill="#1e293b"/>
+
+                    <!-- Row 2 -->
+                    <rect x="105" y="64" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="139" y="64" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="173" y="64" width="28" height="28" rx="6" fill="url(#mem-grad-active)" stroke="#7dd3fc" stroke-width="1.5" filter="drop-shadow(0 0 8px #38bdf8)"/>
+                    <rect x="207" y="64" width="28" height="28" rx="6" fill="url(#mem-grad-active)" stroke="#7dd3fc" stroke-width="1.5" filter="drop-shadow(0 0 8px #38bdf8)"/>
+
+                    <!-- Row 3 -->
+                    <rect x="105" y="98" width="28" height="28" rx="6" fill="url(#mem-grad-active)" stroke="#7dd3fc" stroke-width="1.5" filter="drop-shadow(0 0 8px #38bdf8)"/>
+                    <rect x="139" y="98" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="173" y="98" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="207" y="98" width="28" height="28" rx="6" fill="#1e293b"/>
+
+                    <!-- Row 4 -->
+                    <rect x="105" y="132" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="139" y="132" width="28" height="28" rx="6" fill="url(#mem-grad-active)" stroke="#7dd3fc" stroke-width="1.5" filter="drop-shadow(0 0 8px #38bdf8)"/>
+                    <rect x="173" y="132" width="28" height="28" rx="6" fill="#1e293b"/>
+                    <rect x="207" y="132" width="28" height="28" rx="6" fill="url(#mem-grad-active)" stroke="#7dd3fc" stroke-width="1.5" filter="drop-shadow(0 0 8px #38bdf8)"/>
+
+                    <defs>
+                        <linearGradient id="mem-grad-active" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="40%" stop-color="#38bdf8"/>
+                            <stop offset="100%" stop-color="#0284c7"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Memory Matrix: Cyber Recall</h2>
+                <p class="game-desc">Visual working memory &amp; spatial agility. Memorize the illuminated tile pattern, then recall and tap all target nodes before shields deplete!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Training Mode:</span>
+                        <select class="difficulty-select" id="diff-memorymatrix">
+                            <option value="easy">Easy (No Rotation)</option>
+                            <option value="medium" selected="selected">Medium (90° Rotation)</option>
+                            <option value="hard">Master (180° Dynamic)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="memorymatrix">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="14">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 15: Laser & Mirrors: Photon Flow (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-lasermirrors">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #34d399;">Spatial Logic &amp; Raytracing Optics</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#040914"/>
+                    
+                    <!-- Optics Chamber Grid Frame -->
+                    <rect x="50" y="15" width="240" height="160" rx="10" fill="#080e1e" stroke="#1e293b" stroke-width="2"/>
+                    <path d="M50 55 H290 M50 95 H290 M50 135 H290 M110 15 V175 M170 15 V175 M230 15 V175" stroke="#0f172a" stroke-width="1.5"/>
+
+                    <!-- Laser Emitter at (70, 35) emitting East -->
+                    <circle cx="80" cy="35" r="14" fill="#0f172a" stroke="#38bdf8" stroke-width="2" filter="drop-shadow(0 0 8px #38bdf8)"/>
+                    <path d="M74 35 H86 M82 31 L86 35 L82 39" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>
+
+                    <!-- Laser Beam Path with Neon Bloom -->
+                    <!-- Segment 1: Emitter (80,35) -> Mirror 1 (200, 35) -->
+                    <path d="M80 35 H200" stroke="#38bdf8" stroke-width="4" filter="drop-shadow(0 0 8px #38bdf8)" opacity="0.6"/>
+                    <path d="M80 35 H200" stroke="#ffffff" stroke-width="2"/>
+
+                    <!-- Mirror 1 at (200, 35) '/' diagonal -> reflects South -->
+                    <line x1="188" y1="47" x2="212" y2="23" stroke="#38bdf8" stroke-width="3.5" filter="drop-shadow(0 0 6px #38bdf8)"/>
+
+                    <!-- Segment 2: Mirror 1 (200,35) -> Mirror 2 (200, 115) -->
+                    <path d="M200 35 V115" stroke="#38bdf8" stroke-width="4" filter="drop-shadow(0 0 8px #38bdf8)" opacity="0.6"/>
+                    <path d="M200 35 V115" stroke="#ffffff" stroke-width="2"/>
+
+                    <!-- Mirror 2 at (200, 115) '\' diagonal -> reflects West -->
+                    <line x1="188" y1="103" x2="212" y2="127" stroke="#38bdf8" stroke-width="3.5" filter="drop-shadow(0 0 6px #38bdf8)"/>
+
+                    <!-- Segment 3: Mirror 2 (200,115) -> Crystal (140, 115) -->
+                    <path d="M200 115 H140" stroke="#38bdf8" stroke-width="4" filter="drop-shadow(0 0 8px #38bdf8)" opacity="0.6"/>
+                    <path d="M200 115 H140" stroke="#ffffff" stroke-width="2"/>
+
+                    <!-- Crystal Target at (140, 115) Energized -->
+                    <polygon points="140,100 152,115 140,130 128,115" fill="#34d399" filter="drop-shadow(0 0 12px #34d399) drop-shadow(0 0 20px #38bdf8)"/>
+                    <polygon points="140,105 148,115 140,125 132,115" fill="#ffffff"/>
+
+                    <!-- Obsidian Wall Blocker at (140, 75) -->
+                    <rect x="125" y="60" width="30" height="30" rx="4" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+                    <line x1="130" y1="65" x2="150" y2="85" stroke="#0f172a" stroke-width="2"/>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Laser &amp; Mirrors: Photon Flow</h2>
+                <p class="game-desc">Spatial logic &amp; optics raycaster. Place and rotate 45° planar mirrors, beam splitters, and filters to guide laser photons into all target crystals!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Optics Tier:</span>
+                        <select class="difficulty-select" id="diff-lasermirrors">
+                            <option value="1">Tier 1: Apprentice (Stages 1-5)</option>
+                            <option value="6" selected="selected">Tier 2: Prism Division (Stages 6-10)</option>
+                            <option value="11">Tier 3: Chromatics &amp; Portals (Stages 11-15)</option>
+                            <option value="16">Tier 4: Quantum Master (Stages 16-20)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="lasermirrors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="15">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Game 16: AlgoBot: Maze Runner & Pathfinding (Solo & LAN Multiplayer) -->
+        <div class="game-card" id="card-algobot">
+            <div class="game-thumb">
+                <div class="game-tag" style="color: #38bdf8;">Algorithmic Thinking &amp; Automation</div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="game-thumb-svg" viewBox="0 0 340 190" fill="none">
+                    <rect width="340" height="190" fill="#040914"/>
+                    
+                    <!-- Maze Grid Surface -->
+                    <rect x="40" y="15" width="260" height="160" rx="10" fill="#080e1e" stroke="#1e293b" stroke-width="2"/>
+                    <path d="M40 55 H300 M40 95 H300 M40 135 H300 M92 15 V175 M144 15 V175 M196 15 V175 M248 15 V175" stroke="#0f172a" stroke-width="1.5"/>
+
+                    <!-- Programmed Path Trail Line with Glowing Cyan -->
+                    <path d="M66 115 H170 V35 H274" stroke="#38bdf8" stroke-width="3" stroke-dasharray="6 4" filter="drop-shadow(0 0 8px #38bdf8)"/>
+
+                    <!-- Bot Drone at (170, 75) facing North -->
+                    <circle cx="170" cy="75" r="16" fill="#0284c7" stroke="#38bdf8" stroke-width="2" filter="drop-shadow(0 0 12px #38bdf8)"/>
+                    <polygon points="170,64 163,80 170,76 177,80" fill="#ffffff"/>
+
+                    <!-- Data Chips at (118, 115) and (170, 35) -->
+                    <polygon points="118,105 128,115 118,125 108,115" fill="#38bdf8" filter="drop-shadow(0 0 10px #38bdf8)"/>
+                    <polygon points="170,25 180,35 170,45 160,35" fill="#38bdf8" filter="drop-shadow(0 0 10px #38bdf8)"/>
+
+                    <!-- Exit Terminal at (274, 35) -->
+                    <rect x="256" y="17" width="36" height="36" rx="6" fill="rgba(52, 211, 153, 0.15)" stroke="#34d399" stroke-width="2" filter="drop-shadow(0 0 10px #34d399)"/>
+                    <text x="274" y="41" font-size="16" text-anchor="middle" fill="#34d399">🏁</text>
+
+                    <!-- Instruction Stack Badge overlay -->
+                    <rect x="52" y="138" width="130" height="26" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+                    <text x="60" y="155" font-family="monospace" font-size="11" font-weight="700" fill="#38bdf8">MAIN: [MOVE, F1]</text>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">AlgoBot: Maze Runner &amp; Pathfinding</h2>
+                <p class="game-desc">Visual algorithmic coding &amp; maze automation. Assemble modular instruction blocks, subroutines, and recursion stacks to navigate autonomous rovers through cyber labyrinths!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Algorithm Tier:</span>
+                        <select class="difficulty-select" id="diff-algobot">
+                            <option value="1" selected="selected">Tier 1: Fundamentals (Stages 1-20)</option>
+                            <option value="21">Tier 2: DRY &amp; Function F1 (Stages 21-40)</option>
+                            <option value="41">Tier 3: Dual Subroutines F1/F2 (Stages 41-60)</option>
+                            <option value="61">Tier 4: Gate Networks &amp; Switches (Stages 61-80)</option>
+                            <option value="81">Tier 5: Grandmaster Turing (Stages 81-100)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="algobot">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="16">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wordle / Word Duel Arena Card (Game 17) -->
+        <div class="game-card" data-game="17">
+            <div class="game-media">
+                <svg viewBox="0 0 340 180" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="wdBgGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#020617"/>
+                            <stop offset="50%" stop-color="#0f172a"/>
+                            <stop offset="100%" stop-color="#064e3b"/>
+                        </linearGradient>
+                        <filter id="wdGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="4" result="blur"/>
+                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                        </filter>
+                    </defs>
+
+                    <!-- Background -->
+                    <rect width="340" height="180" fill="url(#wdBgGrad)" rx="16"/>
+
+                    <!-- Keyboard Grid Silhouette Overlay -->
+                    <path d="M 40 135 L 300 135 M 50 148 L 290 148 M 70 161 L 270 161" stroke="#1e293b" stroke-width="2" stroke-dasharray="8,6" opacity="0.6"/>
+
+                    <!-- 3D Letter Tiles (C - O - D - E - R) -->
+                    <!-- Tile 1: C (Green Correct) -->
+                    <rect x="35" y="42" width="48" height="48" rx="8" fill="#22c55e" stroke="#4ade80" stroke-width="2" filter="url(#wdGlow)"/>
+                    <text x="59" y="75" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">C</text>
+
+                    <!-- Tile 2: O (Green Correct) -->
+                    <rect x="91" y="42" width="48" height="48" rx="8" fill="#22c55e" stroke="#4ade80" stroke-width="2" filter="url(#wdGlow)"/>
+                    <text x="115" y="75" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">O</text>
+
+                    <!-- Tile 3: D (Yellow Present) -->
+                    <rect x="147" y="42" width="48" height="48" rx="8" fill="#eab308" stroke="#fde047" stroke-width="2" filter="url(#wdGlow)"/>
+                    <text x="171" y="75" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">D</text>
+
+                    <!-- Tile 4: E (Slate Absent) -->
+                    <rect x="203" y="42" width="48" height="48" rx="8" fill="#334155" stroke="#475569" stroke-width="2"/>
+                    <text x="227" y="75" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#94a3b8">E</text>
+
+                    <!-- Tile 5: R (Green Correct) -->
+                    <rect x="259" y="42" width="48" height="48" rx="8" fill="#22c55e" stroke="#4ade80" stroke-width="2" filter="url(#wdGlow)"/>
+                    <text x="283" y="75" font-family="'Inter', sans-serif" font-size="24" font-weight="900" text-anchor="middle" fill="#ffffff">R</text>
+
+                    <!-- Bottom HUD Overlay Badge -->
+                    <rect x="95" y="102" width="150" height="22" rx="6" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+                    <text x="170" y="117" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle" fill="#34d399">🟩 🟩 🟨 ⬛ 🟩 (SOLVED)</text>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Wordle / Word Duel Arena</h2>
+                <p class="game-desc">Deductive vocabulary &amp; logic puzzle. Unmask secret 5-letter English words in 6 attempts using color-coded hints, hard mode constraints, and real-time LAN speed duels!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Game Mode:</span>
+                        <select class="difficulty-select" id="mode-wordduel">
+                            <option value="standard" selected="selected">Standard 5-Letter Wordle</option>
+                            <option value="hard">Hard Mode (Enforce Hints)</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="wordduel">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="17">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lights Out: Quantum Switch Card (Game 18) -->
+        <div class="game-card" data-game="18">
+            <div class="game-media">
+                <svg viewBox="0 0 340 180" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="loBgGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#020617"/>
+                            <stop offset="50%" stop-color="#0b1329"/>
+                            <stop offset="100%" stop-color="#03354a"/>
+                        </linearGradient>
+                        <filter id="loNeonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="5" result="blur"/>
+                            <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                        </filter>
+                    </defs>
+
+                    <!-- Background -->
+                    <rect width="340" height="180" fill="url(#loBgGrad)" rx="16"/>
+
+                    <!-- Energy Conduits / Traces -->
+                    <path d="M 60 40 L 280 40 M 60 70 L 280 70 M 60 100 L 280 100 M 60 130 L 280 130 M 60 160 L 280 160" stroke="#1e293b" stroke-width="2" opacity="0.7"/>
+                    <path d="M 90 20 L 90 170 M 135 20 L 135 170 M 170 20 L 170 170 M 205 20 L 205 170 M 250 20 L 250 170" stroke="#1e293b" stroke-width="2" opacity="0.7"/>
+
+                    <!-- Glowing Quantum Cross Connection -->
+                    <path d="M 170 45 L 170 145 M 115 95 L 225 95" stroke="#38bdf8" stroke-width="3" opacity="0.6" filter="url(#loNeonGlow)"/>
+
+                    <!-- Center Active Node -->
+                    <circle cx="170" cy="95" r="16" fill="#38bdf8" filter="url(#loNeonGlow)"/>
+                    <circle cx="170" cy="95" r="8" fill="#ffffff"/>
+
+                    <!-- Adjacent Inversion Nodes -->
+                    <!-- Top (170, 50) Active -->
+                    <circle cx="170" cy="50" r="14" fill="#38bdf8" filter="url(#loNeonGlow)"/>
+                    <circle cx="170" cy="50" r="6" fill="#ffffff"/>
+
+                    <!-- Bottom (170, 140) Active -->
+                    <circle cx="170" cy="140" r="14" fill="#38bdf8" filter="url(#loNeonGlow)"/>
+                    <circle cx="170" cy="140" r="6" fill="#ffffff"/>
+
+                    <!-- Left (120, 95) Active -->
+                    <circle cx="120" cy="95" r="14" fill="#38bdf8" filter="url(#loNeonGlow)"/>
+                    <circle cx="120" cy="95" r="6" fill="#ffffff"/>
+
+                    <!-- Right (220, 95) Active -->
+                    <circle cx="220" cy="95" r="14" fill="#38bdf8" filter="url(#loNeonGlow)"/>
+                    <circle cx="220" cy="95" r="6" fill="#ffffff"/>
+
+                    <!-- Dormant Outer Nodes -->
+                    <circle cx="75" cy="50" r="12" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                    <circle cx="265" cy="50" r="12" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                    <circle cx="75" cy="140" r="12" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+                    <circle cx="265" cy="140" r="12" fill="#0f172a" stroke="#334155" stroke-width="2"/>
+
+                    <!-- HUD Pill Overlay -->
+                    <rect x="95" y="150" width="150" height="20" rx="6" fill="#020617" stroke="#334155" stroke-width="1.5"/>
+                    <text x="170" y="164" font-family="monospace" font-size="10" font-weight="700" text-anchor="middle" fill="#38bdf8">⚡ GF(2) PARITY MATRIX</text>
+                </svg>
+            </div>
+            <div class="game-body">
+                <h2 class="game-title">Lights Out: Quantum Switch</h2>
+                <p class="game-desc">Grid inversion &amp; parity puzzle. Unlink interconnected quantum light nodes using linear algebra Galois Field logic, Torus topology, and diagonal superposition in solo &amp; LAN duels!</p>
+                <div class="game-controls">
+                    <div class="difficulty-select-wrapper">
+                        <span class="difficulty-label">Grid Mode:</span>
+                        <select class="difficulty-select" id="mode-lightsout">
+                            <option value="classic" selected="selected">Classic 5x5 Matrix</option>
+                            <option value="torus">Torus Topology (Wrap)</option>
+                            <option value="diag">Diagonal Superposition</option>
+                            <option value="grandmaster">Grandmaster 6x6</option>
+                        </select>
+                    </div>
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-primary play-bot-btn" data-game="lightsout">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>
+                            Play Solo
+                        </button>
+                        <button type="button" class="btn btn-secondary play-online-btn" data-type="18">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            LAN Duel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Upload Game Quick Action Banner -->
@@ -722,6 +1371,37 @@
                 } else if (game === 'chess') {
                     diff = $('#diff-chess').val();
                     window.location.href = 'Games/Chess.aspx?diff=' + diff;
+                } else if (game === 'speedmath') {
+                    var op = $('#op-speedmath').val() || 'mix';
+                    diff = $('#diff-speedmath').val() || 'medium';
+                    window.location.href = 'Games/SpeedMath.aspx?op=' + op + '&diff=' + diff;
+                } else if (game === 'slingpuck') {
+                    diff = $('#diff-slingpuck').val() || 'medium';
+                    window.location.href = 'Games/SlingPuck.aspx?diff=' + diff;
+                } else if (game === 'dots') {
+                    var size = $('#size-dots').val() || '4';
+                    diff = $('#diff-dots').val() || 'medium';
+                    window.location.href = 'Games/DotsAndBoxes.aspx?size=' + size + '&diff=' + diff;
+                } else if (game === 'codebreaker') {
+                    diff = $('#diff-codebreaker').val() || 'medium';
+                    window.location.href = 'Games/Codebreaker.aspx?diff=' + diff;
+                } else if (game === 'memorymatrix') {
+                    diff = $('#diff-memorymatrix').val() || 'medium';
+                    window.location.href = 'Games/MemoryMatrix.aspx?diff=' + diff;
+                } else if (game === 'lasermirrors') {
+                    var lvl = $('#diff-lasermirrors').val() || '1';
+                    window.location.href = 'Games/LaserMirrors.aspx?lvl=' + lvl;
+                } else if (game === 'algobot') {
+                    var lvl = $('#diff-algobot').val() || '1';
+                    window.location.href = 'Games/AlgoBot.aspx?lvl=' + lvl;
+                } else if (game === 'wordduel') {
+                    var mode = $('#mode-wordduel').val() || 'standard';
+                    window.location.href = 'Games/WordDuel.aspx?mode=' + mode;
+                } else if (game === 'lightsout') {
+                    var mode = $('#mode-lightsout').val() || 'classic';
+                    var sz = (mode === 'grandmaster') ? 6 : 5;
+                    var m = (mode === 'diag') ? 'diag' : (mode === 'torus' ? 'torus' : 'cross');
+                    window.location.href = 'Games/LightsOut.aspx?size=' + sz + '&mode=' + m;
                 }
             });
 
@@ -731,7 +1411,7 @@
                 var gameType = parseInt($(this).data('type'), 10);
                 activeQueueType = gameType;
 
-                var gameNames = { 1: "Tic-Tac-Toe", 2: "Connect 4", 3: "Rock-Paper-Scissors", 4: "Air Hockey", 5: "Archery Clash", 9: "Chess Championship" };
+                var gameNames = { 1: "Tic-Tac-Toe", 2: "Connect 4", 3: "Rock-Paper-Scissors", 4: "Air Hockey", 5: "Archery Clash", 9: "Chess Championship", 10: "Speed Math Arena", 11: "Sling Puck Frenzy", 12: "Dots & Boxes", 13: "Codebreaker", 14: "Memory Matrix", 15: "Laser & Mirrors", 16: "AlgoBot", 17: "Wordle / Word Duel", 18: "Lights Out" };
                 $('#mm-title').text('Searching for ' + (gameNames[gameType] || 'Game') + ' Match...');
                 $('#matchmaking-modal').addClass('active');
 
@@ -837,9 +1517,33 @@
 
                         res.games.forEach(function(g) {
                             var thumbUrl = 'CustomGames/' + g.Id + '/' + (g.Thumbnail || 'icon.svg');
+                            var isMp = (g.IsMultiplayer || g.SupportsMultiplayer);
+                            var tagHtml = isMp
+                                ? '<div class="game-tag" style="color: #38bdf8; border-color: rgba(56, 189, 248, 0.3); background: rgba(56, 189, 248, 0.15);">⚡ LAN Multiplayer</div>'
+                                : '<div class="game-tag" style="color: #c084fc;">Custom Plugin</div>';
+
+                            var buttonsHtml = '';
+                            if (isMp) {
+                                buttonsHtml = '<div class="btn-group" style="width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">' +
+                                    '<a href="Games/PlayCustom.aspx?game=' + encodeURIComponent(g.Id) + '" class="btn btn-outline btn-sm" style="justify-content: center;">' +
+                                        'Play Solo' +
+                                    '</a>' +
+                                    '<button type="button" class="btn btn-primary btn-sm custom-mp-challenge-btn" data-id="' + g.Id + '" data-title="' + escapeHtml(g.Title) + '" style="background: linear-gradient(135deg, #9333ea, #c084fc); justify-content: center;">' +
+                                        'Challenge LAN' +
+                                    '</button>' +
+                                '</div>';
+                            } else {
+                                buttonsHtml = '<div class="btn-group" style="width: 100%;">' +
+                                    '<a href="Games/PlayCustom.aspx?game=' + encodeURIComponent(g.Id) + '" class="btn btn-primary" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #9333ea, #c084fc);">' +
+                                        '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
+                                        'Play ' + escapeHtml(g.Title) +
+                                    '</a>' +
+                                '</div>';
+                            }
+
                             var cardHtml = '<div class="game-card" id="card-custom-' + g.Id + '">' +
                                 '<div class="game-thumb" style="position: relative;">' +
-                                    '<div class="game-tag" style="color: #c084fc;">Custom Plugin</div>' +
+                                    tagHtml +
                                     '<img src="' + thumbUrl + '" class="game-thumb-svg" style="object-fit: contain; padding: 16px;" onerror="this.src=\'CustomGames/sample-space-dodger/icon.svg\'" />' +
                                 '</div>' +
                                 '<div class="game-body">' +
@@ -852,17 +1556,28 @@
                                         '<div style="font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px;">' +
                                             'By ' + escapeHtml(g.Author || "LAN Developer") + ' (v' + (g.Version || "1.0") + ')' +
                                         '</div>' +
-                                        '<div class="btn-group" style="width: 100%;">' +
-                                            '<a href="Games/PlayCustom.aspx?game=' + encodeURIComponent(g.Id) + '" class="btn btn-primary" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #9333ea, #c084fc);">' +
-                                                '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>' +
-                                                'Play ' + escapeHtml(g.Title) +
-                                            '</a>' +
-                                        '</div>' +
+                                        buttonsHtml +
                                     '</div>' +
                                 '</div>' +
                             '</div>';
 
                             $grid.append(cardHtml);
+                        });
+
+                        // Bind custom multiplayer challenge buttons
+                        $('.custom-mp-challenge-btn').off('click').on('click', function(e) {
+                            e.preventDefault();
+                            var customId = $(this).data('id');
+                            var customTitle = $(this).data('title');
+                            
+                            // Check if there are other players online
+                            var otherPlayers = $('.challenge-btn');
+                            if (otherPlayers.length === 0) {
+                                if (window.App) window.App.toast("No other players currently online in LAN lobby to challenge.", "warning");
+                            } else {
+                                if (window.App) window.App.toast("Click 'Challenge' next to any online player below to start " + customTitle + "!", "info");
+                                $('html, body').animate({ scrollTop: $('#online-players-list').offset().top - 100 }, 400);
+                            }
                         });
 
                         // Bind delete buttons

@@ -106,15 +106,24 @@
             }
         },
 
-        sendInvite: function(targetConnectionId, gameType) {
+        sendInvite: function(targetConnectionId, gameType, customGameId, customGameTitle) {
             if (this.isConnected() && hub) {
-                hub.server.sendInvite(targetConnectionId, gameType);
+                hub.server.sendInvite(targetConnectionId, gameType, customGameId, customGameTitle);
             }
         },
 
-        acceptInvite: function(inviteId) {
+        acceptInvite: function(inviteId, callback) {
             if (this.isConnected() && hub) {
-                hub.server.acceptInvite(inviteId);
+                var self = this;
+                hub.server.acceptInvite(inviteId).done(function(matchData) {
+                    if (matchData) {
+                        self.onMatchFound(matchData);
+                    }
+                    if (typeof callback === 'function') callback(matchData);
+                }).fail(function(err) {
+                    console.error("Accept invite error:", err);
+                    if (window.App) window.App.toast("Failed to accept challenge. Please retry.", "error");
+                });
             }
         },
 
@@ -143,7 +152,7 @@
                 return;
             }
 
-            var gameNames = { 1: "Tic-Tac-Toe", 2: "Connect 4", 3: "RPS", 4: "Air Hockey", 5: "Archery", 9: "Chess" };
+            var gameNames = { 1: "Tic-Tac-Toe", 2: "Connect 4", 3: "RPS", 4: "Air Hockey", 5: "Archery", 9: "Chess", 10: "Speed Math", 11: "Sling Puck", 12: "Dots & Boxes", 13: "Codebreaker", 14: "Memory Matrix", 15: "Laser & Mirrors", 16: "AlgoBot", 99: "Custom Plugin" };
 
             players.forEach(function(p) {
                 var isMe = (p.ConnectionId === myId || (p.DisplayName && p.DisplayName.toLowerCase() === myName.toLowerCase()));
@@ -191,35 +200,105 @@
 
         openChallengeSelectModal: function(targetId, targetName) {
             var self = this;
-            var html = '<div id="challenge-modal" class="modal-backdrop active">' +
-                '<div class="modal-box">' +
-                    '<h2 class="modal-title">Challenge ' + targetName + '</h2>' +
-                    '<p class="modal-text">Select which mini-game you want to play:</p>' +
-                    '<div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">' +
-                        '<button type="button" class="btn btn-primary send-chal-btn" data-type="1">Tic-Tac-Toe</button>' +
-                        '<button type="button" class="btn btn-secondary send-chal-btn" data-type="2">Connect 4</button>' +
-                        '<button type="button" class="btn btn-primary send-chal-btn" data-type="3" style="background: linear-gradient(135deg, #e11d48, #f43f5e);">Rock-Paper-Scissors Reflex</button>' +
-                        '<button type="button" class="btn btn-secondary send-chal-btn" data-type="4" style="background: linear-gradient(135deg, #d97706, #f59e0b);">Air Hockey</button>' +
-                        '<button type="button" class="btn btn-primary send-chal-btn" data-type="5" style="background: linear-gradient(135deg, #059669, #10b981);">Archery Clash</button>' +
-                        '<button type="button" class="btn btn-secondary send-chal-btn" data-type="9" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">Chess Championship</button>' +
+
+            // Fetch custom games to check if any multiplayer plugins are installed
+            $.get('Handlers/CustomGameHandler.ashx', { action: 'list' }, function(res) {
+                var customButtonsHtml = '';
+                if (res && res.games && res.games.length > 0) {
+                    res.games.forEach(function(g) {
+                        if (g.IsMultiplayer || g.SupportsMultiplayer) {
+                            customButtonsHtml += '<button type="button" class="btn send-chal-btn" data-type="99" data-custom-id="' + g.Id + '" data-custom-title="' + g.Title + '" style="background: linear-gradient(135deg, #9333ea, #c084fc); color: #fff; justify-content: space-between;">' +
+                                '<span>⚡ ' + g.Title + '</span>' +
+                                '<span style="font-size: 0.72rem; opacity: 0.85; background: rgba(0,0,0,0.25); padding: 2px 6px; border-radius: 4px;">Custom Plugin</span>' +
+                            '</button>';
+                        }
+                    });
+                }
+
+                var html = '<div id="challenge-modal" class="modal-backdrop active">' +
+                    '<div class="modal-box" style="max-width: 440px;">' +
+                        '<h2 class="modal-title">Challenge ' + targetName + '</h2>' +
+                        '<p class="modal-text">Select a built-in game or uploaded multiplayer plugin:</p>' +
+                        '<div style="display: flex; flex-direction: column; gap: 8px; max-height: 360px; overflow-y: auto; margin-bottom: 16px; padding-right: 4px;">' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="1">Tic-Tac-Toe</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="2">Connect 4</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="3" style="background: linear-gradient(135deg, #e11d48, #f43f5e);">Rock-Paper-Scissors Reflex</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="4" style="background: linear-gradient(135deg, #d97706, #f59e0b);">Air Hockey</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="5" style="background: linear-gradient(135deg, #059669, #10b981);">Archery Clash</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="9" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">Chess Championship</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="10" style="background: linear-gradient(135deg, #0284c7, #06b6d4);">⚡ Speed Math Arena</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="11" style="background: linear-gradient(135deg, #d97706, #f59e0b);">⚡ Sling Puck Frenzy</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="12" style="background: linear-gradient(135deg, #d97706, #fbbf24);">🎯 Dots &amp; Boxes</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="13" style="background: linear-gradient(135deg, #9333ea, #c084fc);">🕵️ Codebreaker Cipher</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="14" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">🧠 Memory Matrix</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="15" style="background: linear-gradient(135deg, #059669, #34d399);">⚡ Laser &amp; Mirrors</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="16" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">🤖 AlgoBot Pathfinding</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="17" style="background: linear-gradient(135deg, #10b981, #34d399);">📝 Wordle / Word Duel</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="18" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">💡 Lights Out: Quantum Switch</button>' +
+                            customButtonsHtml +
+                        '</div>' +
+                        '<button type="button" class="btn btn-outline" id="close-chal-modal" style="width: 100%;">Cancel</button>' +
                     '</div>' +
-                    '<button type="button" class="btn btn-outline" id="close-chal-modal">Cancel</button>' +
-                '</div>' +
-            '</div>';
+                '</div>';
 
-            $('#challenge-modal').remove();
-            $('body').append(html);
+                $('#challenge-modal').remove();
+                $('body').append(html);
 
-            $('.send-chal-btn').on('click', function(e) {
-                e.preventDefault();
-                var gameType = parseInt($(this).data('type'), 10);
-                self.sendInvite(targetId, gameType);
-                $('#challenge-modal').removeClass('active').remove();
-            });
+                $('.send-chal-btn').on('click', function(e) {
+                    e.preventDefault();
+                    var gameType = parseInt($(this).data('type'), 10);
+                    var customId = $(this).data('custom-id') || null;
+                    var customTitle = $(this).data('custom-title') || null;
 
-            $('#close-chal-modal').on('click', function(e) {
-                e.preventDefault();
-                $('#challenge-modal').removeClass('active').remove();
+                    self.sendInvite(targetId, gameType, customId, customTitle);
+                    $('#challenge-modal').removeClass('active').remove();
+                });
+
+                $('#close-chal-modal').on('click', function(e) {
+                    e.preventDefault();
+                    $('#challenge-modal').removeClass('active').remove();
+                });
+            }).fail(function() {
+                // Fallback without custom plugins
+                var html = '<div id="challenge-modal" class="modal-backdrop active">' +
+                    '<div class="modal-box">' +
+                        '<h2 class="modal-title">Challenge ' + targetName + '</h2>' +
+                        '<p class="modal-text">Select which mini-game you want to play:</p>' +
+                        '<div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px;">' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="1">Tic-Tac-Toe</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="2">Connect 4</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="3" style="background: linear-gradient(135deg, #e11d48, #f43f5e);">Rock-Paper-Scissors Reflex</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="4" style="background: linear-gradient(135deg, #d97706, #f59e0b);">Air Hockey</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="5" style="background: linear-gradient(135deg, #059669, #10b981);">Archery Clash</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="9" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">Chess Championship</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="10" style="background: linear-gradient(135deg, #0284c7, #06b6d4);">⚡ Speed Math Arena</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="11" style="background: linear-gradient(135deg, #d97706, #f59e0b);">⚡ Sling Puck Frenzy</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="12" style="background: linear-gradient(135deg, #d97706, #fbbf24);">🎯 Dots &amp; Boxes</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="13" style="background: linear-gradient(135deg, #9333ea, #c084fc);">🕵️ Codebreaker Cipher</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="14" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">🧠 Memory Matrix</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="15" style="background: linear-gradient(135deg, #059669, #34d399);">⚡ Laser &amp; Mirrors</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="16" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">🤖 AlgoBot Pathfinding</button>' +
+                            '<button type="button" class="btn btn-secondary send-chal-btn" data-type="17" style="background: linear-gradient(135deg, #10b981, #34d399);">📝 Wordle / Word Duel</button>' +
+                            '<button type="button" class="btn btn-primary send-chal-btn" data-type="18" style="background: linear-gradient(135deg, #0284c7, #38bdf8);">💡 Lights Out: Quantum Switch</button>' +
+                        '</div>' +
+                        '<button type="button" class="btn btn-outline" id="close-chal-modal">Cancel</button>' +
+                    '</div>' +
+                '</div>';
+
+                $('#challenge-modal').remove();
+                $('body').append(html);
+
+                $('.send-chal-btn').on('click', function(e) {
+                    e.preventDefault();
+                    var gameType = parseInt($(this).data('type'), 10);
+                    self.sendInvite(targetId, gameType);
+                    $('#challenge-modal').removeClass('active').remove();
+                });
+
+                $('#close-chal-modal').on('click', function(e) {
+                    e.preventDefault();
+                    $('#challenge-modal').removeClass('active').remove();
+                });
             });
         },
 
@@ -248,32 +327,64 @@
             });
         },
 
+        _isNavigatingToMatch: false,
+
         onMatchFound: function(matchData) {
+            console.log("Match Found Payload:", matchData);
+            if (!matchData) return;
+
+            $('#matchmaking-modal').removeClass('active');
+            if (this._isNavigatingToMatch) return;
+            this._isNavigatingToMatch = true;
+
             if (window.GameAudio) window.GameAudio.playWin();
             if (window.App) window.App.toast("Match found! Launching game...", "success");
 
-            var pageMap = {
-                1: "Games/TicTacToe.aspx",
-                2: "Games/Connect4.aspx",
-                3: "Games/RPS.aspx",
-                4: "Games/AirHockey.aspx",
-                5: "Games/Archery.aspx",
-                9: "Games/Chess.aspx"
-            };
+            var appRoot = window.APP_ROOT || '/';
+            if (!appRoot.endsWith('/')) appRoot += '/';
 
-            var targetPage = pageMap[matchData.gameType] || "Default.aspx";
-            
+            var p1Enc = encodeURIComponent(matchData.player1 ? matchData.player1.DisplayName : "Player 1");
+            var p2Enc = encodeURIComponent(matchData.player2 ? matchData.player2.DisplayName : "Player 2");
+
+            var targetUrl = "";
+            // Check if Custom Plugin Game
+            if (matchData.gameType === 99 || matchData.customGameId) {
+                targetUrl = appRoot + "Games/PlayCustom.aspx?game=" + encodeURIComponent(matchData.customGameId) + "&session=" + matchData.sessionId + "&p1=" + p1Enc + "&p2=" + p2Enc;
+            } else {
+                var pageMap = {
+                    1: "Games/TicTacToe.aspx",
+                    2: "Games/Connect4.aspx",
+                    3: "Games/RPS.aspx",
+                    4: "Games/AirHockey.aspx",
+                    5: "Games/Archery.aspx",
+                    9: "Games/Chess.aspx",
+                    10: "Games/SpeedMath.aspx",
+                    11: "Games/SlingPuck.aspx",
+                    12: "Games/DotsAndBoxes.aspx",
+                    13: "Games/Codebreaker.aspx",
+                    14: "Games/MemoryMatrix.aspx",
+                    15: "Games/LaserMirrors.aspx",
+                    16: "Games/AlgoBot.aspx",
+                    17: "Games/WordDuel.aspx",
+                    18: "Games/LightsOut.aspx"
+                };
+
+                var targetPage = pageMap[matchData.gameType] || "Default.aspx";
+                targetUrl = appRoot + targetPage + "?session=" + matchData.sessionId + "&p1=" + p1Enc + "&p2=" + p2Enc;
+            }
+
+            console.log("Navigating to match:", targetUrl);
             setTimeout(function() {
-                window.location.href = targetPage + "?session=" + matchData.sessionId + "&p1=" + encodeURIComponent(matchData.player1.DisplayName) + "&p2=" + encodeURIComponent(matchData.player2.DisplayName);
-            }, 600);
+                window.location.href = targetUrl;
+            }, 300);
         },
 
         onInviteReceived: function(inviteData) {
             var self = this;
             if (window.GameAudio) window.GameAudio.playMove();
 
-            var gameNames = { 1: "Tic-Tac-Toe", 2: "Connect 4", 3: "Rock-Paper-Scissors Reflex", 4: "Air Hockey", 5: "Archery Clash", 9: "Chess Championship" };
-            var gameName = gameNames[inviteData.gameType] || "a game";
+            var gameNames = { 1: "Tic-Tac-Toe", 2: "Connect 4", 3: "Rock-Paper-Scissors Reflex", 4: "Air Hockey", 5: "Archery Clash", 9: "Chess Championship", 10: "Speed Math Arena", 11: "Sling Puck Frenzy", 12: "Dots & Boxes", 13: "Codebreaker Cipher", 14: "Memory Matrix: Cyber Recall", 15: "Laser & Mirrors: Photon Flow", 16: "AlgoBot: Maze Runner", 17: "Wordle / Word Duel Arena", 18: "Lights Out: Quantum Switch", 99: "Custom Plugin" };
+            var gameName = inviteData.customGameTitle || gameNames[inviteData.gameType] || "a game";
 
             var html = '<div id="invite-incoming-modal" class="modal-backdrop active">' +
                 '<div class="modal-box">' +
@@ -281,7 +392,7 @@
                         '<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>' +
                     '</div>' +
                     '<h2 class="modal-title">Game Challenge!</h2>' +
-                    '<p class="modal-text"><strong style="color: #fff;">' + inviteData.fromPlayer.DisplayName + '</strong> has challenged you to a match of <strong style="color: var(--accent-cyan);">' + gameName + '</strong>!</p>' +
+                    '<p class="modal-text"><strong style="color: #fff;">' + (inviteData.fromPlayer ? inviteData.fromPlayer.DisplayName : "Opponent") + '</strong> has challenged you to a match of <strong style="color: var(--accent-cyan);">' + gameName + '</strong>!</p>' +
                     '<div class="btn-group">' +
                         '<button type="button" class="btn btn-primary" id="accept-invite-btn">Accept Challenge</button>' +
                         '<button type="button" class="btn btn-outline" id="decline-invite-btn">Decline</button>' +
@@ -292,16 +403,25 @@
             $('#invite-incoming-modal').remove();
             $('body').append(html);
 
-            $('#accept-invite-btn').on('click', function(e) {
+            $('#accept-invite-btn').off('click').on('click', function(e) {
                 e.preventDefault();
-                self.acceptInvite(inviteData.inviteId);
+                e.stopPropagation();
+                $(this).prop('disabled', true).text('Joining Match...');
+                self.acceptInvite(inviteData.inviteId, function(matchData) {
+                    if (matchData) {
+                        self.onMatchFound(matchData);
+                    }
+                });
                 $('#invite-incoming-modal').removeClass('active').remove();
+                return false;
             });
 
-            $('#decline-invite-btn').on('click', function(e) {
+            $('#decline-invite-btn').off('click').on('click', function(e) {
                 e.preventDefault();
+                e.stopPropagation();
                 self.declineInvite(inviteData.inviteId);
                 $('#invite-incoming-modal').removeClass('active').remove();
+                return false;
             });
         }
     };

@@ -123,7 +123,7 @@ namespace GameHub.Services
             }
         }
 
-        public InviteRequest CreateInvite(string fromConnectionId, string toConnectionId, GameType gameType)
+        public InviteRequest CreateInvite(string fromConnectionId, string toConnectionId, GameType gameType, string customGameId = null, string customGameTitle = null)
         {
             Player fromPlayer = GetPlayer(fromConnectionId);
             Player toPlayer = GetPlayer(toConnectionId);
@@ -134,7 +134,9 @@ namespace GameHub.Services
             {
                 FromPlayer = fromPlayer,
                 ToPlayer = toPlayer,
-                GameType = gameType
+                GameType = gameType,
+                CustomGameId = customGameId,
+                CustomGameTitle = customGameTitle
             };
 
             _invites[req.InviteId] = req;
@@ -158,11 +160,11 @@ namespace GameHub.Services
         #endregion
 
         #region Session Management & Multi-Page Resilience
-        public GameSession CreateSession(GameType gameType, Player p1, Player p2)
+        public GameSession CreateSession(GameType gameType, Player p1, Player p2, string customGameId = null)
         {
             lock (_sessionLock)
             {
-                GameSession session = new GameSession(gameType, p1, p2);
+                GameSession session = new GameSession(gameType, p1, p2, customGameId);
                 _sessions[session.SessionId] = session;
 
                 p1.Status = PlayerStatus.InGame;
@@ -830,6 +832,458 @@ namespace GameHub.Services
                     nextWindY = session.CurrentWindY,
                     p1Shots = session.Player1ArcheryShots,
                     p2Shots = session.Player2ArcheryShots
+                }
+            };
+        }
+
+        public MoveResult ProcessMathAnswer(string sessionId, string connectionId, int scoreDelta, int streak, bool isCorrect)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            bool isP1 = (session.Player1 != null && session.Player1.ConnectionId == connectionId);
+            if (isP1)
+            {
+                session.Player1MathScore = Math.Max(0, session.Player1MathScore + scoreDelta);
+                session.Player1MathAnswered++;
+                session.Player1MathStreak = streak;
+            }
+            else
+            {
+                session.Player2MathScore = Math.Max(0, session.Player2MathScore + scoreDelta);
+                session.Player2MathAnswered++;
+                session.Player2MathStreak = streak;
+            }
+
+            session.LastMoveAt = DateTime.UtcNow;
+
+            return new MoveResult
+            {
+                Success = true,
+                ExtraData = new
+                {
+                    isP1 = isP1,
+                    scoreDelta = scoreDelta,
+                    streak = streak,
+                    isCorrect = isCorrect,
+                    p1Score = session.Player1MathScore,
+                    p2Score = session.Player2MathScore,
+                    p1Answered = session.Player1MathAnswered,
+                    p2Answered = session.Player2MathAnswered,
+                    p1Streak = session.Player1MathStreak,
+                    p2Streak = session.Player2MathStreak
+                }
+            };
+        }
+
+        public MoveResult FinishMathMatch(string sessionId)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            string winnerId = null;
+            bool isDraw = false;
+
+            if (session.Player1MathScore > session.Player2MathScore)
+            {
+                winnerId = session.Player1 != null ? session.Player1.ConnectionId : null;
+            }
+            else if (session.Player2MathScore > session.Player1MathScore)
+            {
+                winnerId = session.Player2 != null ? session.Player2.ConnectionId : null;
+            }
+            else
+            {
+                isDraw = true;
+            }
+
+            session.WinnerPlayerId = winnerId;
+            session.IsDraw = isDraw;
+            RecordGameResult(session.Player1, session.Player2, winnerId, isDraw);
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerId,
+                IsDraw = isDraw,
+                ExtraData = new
+                {
+                    p1FinalScore = session.Player1MathScore,
+                    p2FinalScore = session.Player2MathScore,
+                    p1Answered = session.Player1MathAnswered,
+                    p2Answered = session.Player2MathAnswered,
+                    winnerName = isDraw ? "Tie" : (winnerId == (session.Player1 != null ? session.Player1.ConnectionId : "") ? session.Player1.DisplayName : (session.Player2 != null ? session.Player2.DisplayName : "Opponent"))
+                }
+            };
+        }
+
+        public MoveResult FinishSlingPuckMatch(string sessionId, int winnerPlayerNumber)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            string winnerId = (winnerPlayerNumber == 1)
+                ? (session.Player1 != null ? session.Player1.ConnectionId : null)
+                : (session.Player2 != null ? session.Player2.ConnectionId : null);
+
+            session.WinnerPlayerId = winnerId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerId, false);
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerPlayerNumber = winnerPlayerNumber,
+                    winnerName = (winnerPlayerNumber == 1) ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") : (session.Player2 != null ? session.Player2.DisplayName : "Player 2")
+                }
+            };
+        }
+
+        public MoveResult ProcessDotsAndBoxesMove(string sessionId, string connectionId, string lineType, int r, int c)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            if (session.CurrentTurnPlayerId != connectionId)
+            {
+                return new MoveResult { Success = false, Message = "It is not your turn!" };
+            }
+
+            bool isP1 = (session.Player1 != null && session.Player1.ConnectionId == connectionId);
+            int N = session.DotsGridSize;
+            if (N < 3 || N > 6) N = 4;
+
+            if (session.DotsHozLines == null || session.DotsVertLines == null || session.DotsBoxes == null)
+            {
+                session.InitBoard();
+            }
+
+            // Draw line
+            if (lineType == "h")
+            {
+                if (r < 0 || r > N || c < 0 || c >= N || session.DotsHozLines[r, c])
+                {
+                    return new MoveResult { Success = false, Message = "Invalid line placement." };
+                }
+                session.DotsHozLines[r, c] = true;
+            }
+            else if (lineType == "v")
+            {
+                if (r < 0 || r >= N || c < 0 || c > N || session.DotsVertLines[r, c])
+                {
+                    return new MoveResult { Success = false, Message = "Invalid line placement." };
+                }
+                session.DotsVertLines[r, c] = true;
+            }
+            else
+            {
+                return new MoveResult { Success = false, Message = "Unknown line type." };
+            }
+
+            // Check newly completed boxes
+            List<object> newlyCompleted = new List<object>();
+            for (int br = 0; br < N; br++)
+            {
+                for (int bc = 0; bc < N; bc++)
+                {
+                    if (session.DotsBoxes[br, bc] == 0)
+                    {
+                        bool top = session.DotsHozLines[br, bc];
+                        bool bot = session.DotsHozLines[br + 1, bc];
+                        bool left = session.DotsVertLines[br, bc];
+                        bool right = session.DotsVertLines[br, bc + 1];
+
+                        if (top && bot && left && right)
+                        {
+                            session.DotsBoxes[br, bc] = isP1 ? 1 : 2;
+                            if (isP1) session.Player1Boxes++;
+                            else session.Player2Boxes++;
+
+                            newlyCompleted.Add(new { r = br, c = bc, owner = isP1 ? 1 : 2 });
+                        }
+                    }
+                }
+            }
+
+            bool capturedBox = newlyCompleted.Count > 0;
+            int totalBoxes = N * N;
+            bool isGameOver = (session.Player1Boxes + session.Player2Boxes >= totalBoxes);
+            string winnerId = null;
+            bool isDraw = false;
+
+            if (isGameOver)
+            {
+                session.Status = SessionStatus.Finished;
+                if (session.Player1Boxes > session.Player2Boxes)
+                {
+                    winnerId = session.Player1 != null ? session.Player1.ConnectionId : null;
+                }
+                else if (session.Player2Boxes > session.Player1Boxes)
+                {
+                    winnerId = session.Player2 != null ? session.Player2.ConnectionId : null;
+                }
+                else
+                {
+                    isDraw = true;
+                }
+                session.WinnerPlayerId = winnerId;
+                session.IsDraw = isDraw;
+                RecordGameResult(session.Player1, session.Player2, winnerId, isDraw);
+            }
+            else
+            {
+                // If no box captured, switch turn to opponent
+                if (!capturedBox)
+                {
+                    session.CurrentTurnPlayerId = isP1 
+                        ? (session.Player2 != null ? session.Player2.ConnectionId : null) 
+                        : (session.Player1 != null ? session.Player1.ConnectionId : null);
+                }
+                // If box captured, player keeps their turn!
+            }
+
+            session.LastMoveAt = DateTime.UtcNow;
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = isGameOver,
+                WinnerPlayerId = winnerId,
+                IsDraw = isDraw,
+                NextTurnPlayerId = session.CurrentTurnPlayerId,
+                ExtraData = new
+                {
+                    lineType = lineType,
+                    r = r,
+                    c = c,
+                    isP1 = isP1,
+                    capturedBox = capturedBox,
+                    completedBoxes = newlyCompleted,
+                    p1Boxes = session.Player1Boxes,
+                    p2Boxes = session.Player2Boxes,
+                    nextTurnPlayerId = session.CurrentTurnPlayerId,
+                    isGameOver = isGameOver,
+                    winnerName = isDraw ? "Tie" : (winnerId == (session.Player1 != null ? session.Player1.ConnectionId : "") ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") : (session.Player2 != null ? session.Player2.DisplayName : "Player 2"))
+                }
+            };
+        }
+
+        public MoveResult FinishCodebreakerMatch(string sessionId, string winnerConnectionId, int attemptsUsed, int elapsedSeconds)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            session.WinnerPlayerId = winnerConnectionId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerConnectionId, false);
+
+            string winnerName = (winnerConnectionId == (session.Player1 != null ? session.Player1.ConnectionId : "")) 
+                ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") 
+                : (session.Player2 != null ? session.Player2.DisplayName : "Player 2");
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerConnectionId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerId = winnerConnectionId,
+                    winnerName = winnerName,
+                    attemptsUsed = attemptsUsed,
+                    elapsedSeconds = elapsedSeconds
+                }
+            };
+        }
+
+        public MoveResult FinishMemoryMatrixMatch(string sessionId, string winnerConnectionId, int levelReached, int score)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            session.WinnerPlayerId = winnerConnectionId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerConnectionId, false);
+
+            string winnerName = (winnerConnectionId == (session.Player1 != null ? session.Player1.ConnectionId : "")) 
+                ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") 
+                : (session.Player2 != null ? session.Player2.DisplayName : "Player 2");
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerConnectionId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerId = winnerConnectionId,
+                    winnerName = winnerName,
+                    levelReached = levelReached,
+                    score = score
+                }
+            };
+        }
+
+        public MoveResult FinishLaserMirrorsMatch(string sessionId, string winnerConnectionId, int levelReached, int elapsedSeconds)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            session.WinnerPlayerId = winnerConnectionId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerConnectionId, false);
+
+            string winnerName = (winnerConnectionId == (session.Player1 != null ? session.Player1.ConnectionId : "")) 
+                ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") 
+                : (session.Player2 != null ? session.Player2.DisplayName : "Player 2");
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerConnectionId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerId = winnerConnectionId,
+                    winnerName = winnerName,
+                    levelReached = levelReached,
+                    elapsedSeconds = elapsedSeconds
+                }
+            };
+        }
+
+        public MoveResult FinishAlgoBotMatch(string sessionId, string winnerConnectionId, int levelReached, int instructionsUsed, int elapsedSeconds)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            session.WinnerPlayerId = winnerConnectionId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerConnectionId, false);
+
+            string winnerName = (winnerConnectionId == (session.Player1 != null ? session.Player1.ConnectionId : "")) 
+                ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") 
+                : (session.Player2 != null ? session.Player2.DisplayName : "Player 2");
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerConnectionId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerId = winnerConnectionId,
+                    winnerName = winnerName,
+                    levelReached = levelReached,
+                    instructionsUsed = instructionsUsed,
+                    elapsedSeconds = elapsedSeconds
+                }
+            };
+        }
+
+        public MoveResult FinishWordDuelMatch(string sessionId, string winnerConnectionId, string secretWord, int attemptsUsed, int elapsedSeconds)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            session.WinnerPlayerId = winnerConnectionId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerConnectionId, false);
+
+            string winnerName = (winnerConnectionId == (session.Player1 != null ? session.Player1.ConnectionId : "")) 
+                ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") 
+                : (session.Player2 != null ? session.Player2.DisplayName : "Player 2");
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerConnectionId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerId = winnerConnectionId,
+                    winnerName = winnerName,
+                    secretWord = secretWord,
+                    attemptsUsed = attemptsUsed,
+                    elapsedSeconds = elapsedSeconds
+                }
+            };
+        }
+
+        public MoveResult FinishLightsOutMatch(string sessionId, string winnerConnectionId, int movesUsed, int elapsedSeconds)
+        {
+            GameSession session = GetSession(sessionId);
+            if (session == null || session.Status != SessionStatus.InProgress)
+            {
+                return new MoveResult { Success = false, Message = "Session not active." };
+            }
+
+            session.Status = SessionStatus.Finished;
+            session.WinnerPlayerId = winnerConnectionId;
+            session.IsDraw = false;
+            RecordGameResult(session.Player1, session.Player2, winnerConnectionId, false);
+
+            string winnerName = (winnerConnectionId == (session.Player1 != null ? session.Player1.ConnectionId : "")) 
+                ? (session.Player1 != null ? session.Player1.DisplayName : "Player 1") 
+                : (session.Player2 != null ? session.Player2.DisplayName : "Player 2");
+
+            return new MoveResult
+            {
+                Success = true,
+                IsGameOver = true,
+                WinnerPlayerId = winnerConnectionId,
+                IsDraw = false,
+                ExtraData = new
+                {
+                    winnerId = winnerConnectionId,
+                    winnerName = winnerName,
+                    movesUsed = movesUsed,
+                    elapsedSeconds = elapsedSeconds
                 }
             };
         }

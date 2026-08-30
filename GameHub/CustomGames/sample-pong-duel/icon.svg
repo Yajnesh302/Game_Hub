@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 190" fill="none">
+  <rect width="340" height="190" fill="#060b18"/>
+  <line x1="170" y1="10" x2="170" y2="180" stroke="#334155" stroke-width="2" stroke-dasharray="6,6"/>
+  <!-- Left Paddle (Cyan) -->
+  <rect x="25" y="60" width="12" height="70" rx="6" fill="#38bdf8" filter="drop-shadow(0 0 8px #38bdf8)"/>
+  <!-- Right Paddle (Pink) -->
+  <rect x="303" y="80" width="12" height="70" rx="6" fill="#f43f5e" filter="drop-shadow(0 0 8px #f43f5e)"/>
+  <!-- Ball (White/Yellow Glow) -->
+  <circle cx="170" cy="95" r="8" fill="#ffffff" filter="drop-shadow(0 0 10px #facc15)"/>
+  <!-- Trajectory Trail -->
+  <path d="M 40 95 Q 110 70 170 95" stroke="#38bdf8" stroke-width="2" stroke-dasharray="3,3" opacity="0.6"/>
+</svg>

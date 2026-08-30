@@ -9,6 +9,8 @@
     "Entry": "index.html",
     "Category": "Arcade",
     "SupportsLeaderboard": true,
+    "IsMultiplayer": false,
+    "SupportsMultiplayer": false,
     "InstalledAt": "2026-08-19T18:35:19.2791342Z",
     "DirectoryPath": "E:\\Game\\GameHub\\CustomGames\\sample-space-dodger",
     "RelativeUrl": "CustomGames/sample-space-dodger/index.html"
@@ -23,8 +25,26 @@
     "Entry": "index.html",
     "Category": "Arcade",
     "SupportsLeaderboard": true,
+    "IsMultiplayer": false,
+    "SupportsMultiplayer": false,
     "InstalledAt": "2026-08-19T18:43:14.0839635Z",
     "DirectoryPath": "E:\\Game\\GameHub\\CustomGames\\neon-snake",
     "RelativeUrl": "CustomGames/neon-snake/index.html"
+  },
+  "sample-pong-duel": {
+    "Id": "sample-pong-duel",
+    "Title": "Neon Pong Duel",
+    "Description": "Fast-paced 2-Player LAN multiplayer neon pong. Challenge any player online over your local intranet!",
+    "Author": "Game Hub Studio",
+    "Version": "1.0.0",
+    "Thumbnail": "icon.svg",
+    "Entry": "index.html",
+    "Category": "Action",
+    "SupportsLeaderboard": false,
+    "IsMultiplayer": true,
+    "SupportsMultiplayer": true,
+    "InstalledAt": "2026-08-30T15:44:17.063023Z",
+    "DirectoryPath": "E:\\Game\\GameHub\\CustomGames\\sample-pong-duel",
+    "RelativeUrl": "CustomGames/sample-pong-duel/index.html"
   }
 }

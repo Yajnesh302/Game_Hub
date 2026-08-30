@@ -186,7 +186,7 @@
 
             $('#modal-result-icon').html(iconHtml);
             $('#modal-result-title').text(options.title || 'Game Over');
-            $('#modal-result-text').text(options.text || '');
+            $('#modal-result-text').html(options.html || options.text || '');
 
             $('#modal-rematch-btn').off('click').on('click', function(e) {
                 e.preventDefault();

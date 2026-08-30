@@ -24,6 +24,11 @@
     var comboCount = 0;
     var lastThrowTime = 0;
 
+    // Lives & Heart System (3 Lives)
+    var maxLives = 3;
+    var lives = 3;
+    var isThrowCooldown = false;
+
     // Target Physics & Kinematics
     var target = {
         x: 270,
@@ -63,9 +68,10 @@
     var floatingScores = [];
 
     // Safe Collision Thresholds (radians)
-    var MIN_KNIFE_GAP = 0.22;       // ~12.6 degrees
-    var MIN_OBSTACLE_GAP = 0.30;    // ~17.2 degrees
-    var COLLECTIBLE_GAP = 0.28;
+    // Knife handle/guard is 14px wide at R=88 -> 14/88 = 0.159 rad (~9.1 deg)
+    var MIN_KNIFE_GAP = 0.16;       // ~9.2 degrees (Exact pixel-accurate knife width)
+    var KNIFE_HALF_WIDTH = 0.075;   // ~4.3 degrees knife tip/guard half-width
+    var COLLECTIBLE_GAP = 0.24;
 
     var KnifeThrow = {
         init: function() {
@@ -103,10 +109,13 @@
         newGame: function() {
             score = 0;
             level = 1;
+            lives = maxLives;
             totalKnivesStuck = 0;
             comboCount = 0;
+            isThrowCooldown = false;
 
             this.updateHUD();
+            this.renderLivesHUD();
             this.loadLevel(1);
 
             isPaused = false;
@@ -114,6 +123,20 @@
             lastTime = performance.now();
 
             this.startLoop();
+        },
+
+        renderLivesHUD: function() {
+            var $container = $('#knifethrow-lives-container');
+            if (!$container.length) return;
+            $container.empty();
+
+            for (var i = 0; i < maxLives; i++) {
+                var isAlive = (i < lives);
+                var svgHeart = '<svg class="knifethrow-heart-icon ' + (isAlive ? 'knifethrow-heart-active' : '') + '" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="' + (isAlive ? '#f43f5e' : 'none') + '" stroke="' + (isAlive ? '#fb7185' : '#475569') + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="opacity: ' + (isAlive ? '1' : '0.35') + ';">' +
+                    '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>' +
+                '</svg>';
+                $container.append(svgHeart);
+            }
         },
 
         loadLevel: function(lvl) {
@@ -127,6 +150,7 @@
             slicedApples = [];
             targetShards = [];
             comboCount = 0;
+            isThrowCooldown = false;
 
             // Target positioning reset
             target.y = target.baseY;
@@ -154,24 +178,35 @@
                 target.mode = 'constant';
             }
 
-            // Pre-stuck knives (Fair spacing)
+            // Pre-stuck knives (Fair spacing, keeping bottom firing area clear)
             var preStuckCount = Math.min(4, Math.floor((level - 1) / 2));
             if (preStuckCount > 0) {
                 var step = (Math.PI * 2) / (preStuckCount + 1);
                 for (var p = 0; p < preStuckCount; p++) {
-                    var ang = (p + 1) * step + (Math.random() * 0.2 - 0.1);
-                    stuckKnives.push(this.normalizeAngle(ang));
+                    var ang = (p + 1) * step + (Math.random() * 0.15 - 0.075);
+                    // Ensure clearance from angle 0 (bottom starting area)
+                    var normAng = this.normalizeAngle(ang);
+                    var distFromBottom = Math.min(normAng, Math.PI * 2 - normAng);
+                    if (distFromBottom < 0.35) {
+                        normAng = this.normalizeAngle(normAng + 0.4);
+                    }
+                    stuckKnives.push(normAng);
                 }
             }
 
-            // Obstacles (Starting level 4)
+            // Obstacles (Starting level 4, kept away from starting bottom area)
             if (level >= 4) {
                 var obstCount = (level >= 8) ? 2 : 1;
                 for (var o = 0; o < obstCount; o++) {
-                    var obstAngle = Math.PI + (o * Math.PI * 0.6) + (Math.random() * 0.3);
+                    var obstAngle = Math.PI + (o * Math.PI * 0.6) + (Math.random() * 0.25);
+                    var normObstAng = this.normalizeAngle(obstAngle);
+                    var distFromBot = Math.min(normObstAng, Math.PI * 2 - normObstAng);
+                    if (distFromBot < 0.45) {
+                        normObstAng = this.normalizeAngle(normObstAng + 0.5);
+                    }
                     obstacles.push({
-                        angle: this.normalizeAngle(obstAngle),
-                        width: 0.28
+                        angle: normObstAng,
+                        width: 0.26
                     });
                 }
             }
@@ -186,6 +221,7 @@
             }
 
             this.updateHUD();
+            this.renderLivesHUD();
             this.renderKnifeStackHUD();
         },
 
@@ -195,7 +231,7 @@
         },
 
         throwKnife: function() {
-            if (!isRunning || isPaused || flyingKnife !== null || knivesInStack <= 0) return;
+            if (!isRunning || isPaused || isThrowCooldown || flyingKnife !== null || knivesInStack <= 0) return;
 
             knivesInStack--;
             this.renderKnifeStackHUD();
@@ -381,12 +417,12 @@
                 }
             }
 
-            // B. Check Collision with Obstacle Wedges
+            // B. Check Collision with Obstacle Wedges (Pixel-Accurate)
             for (var j = 0; j < obstacles.length; j++) {
                 var oDiff = Math.abs(landingAngle - obstacles[j].angle);
                 var oDist = Math.min(oDiff, Math.PI * 2 - oDiff);
 
-                if (oDist < MIN_OBSTACLE_GAP) {
+                if (oDist < (obstacles[j].width + KNIFE_HALF_WIDTH)) {
                     this.handleCollision();
                     return;
                 }
@@ -405,7 +441,7 @@
                         score += bonusPts;
 
                         this.spawnSlicedApple(target.x, target.y + target.radius);
-                        this.spawnFloatingScore(target.x, target.y + target.radius + 10, bonusPts);
+                        this.spawnFloatingScore(target.x, target.y + target.radius + 10, bonusPts, '#facc15');
                         if (window.GameAudio) window.GameAudio.playCollectibleHit();
                     }
                 }
@@ -426,7 +462,7 @@
             // Spawn Spark Particles & Shockwave
             this.spawnSparks(target.x, target.y + target.radius, '#38bdf8', 10);
             this.spawnShockwave(target.x, target.y + target.radius);
-            this.spawnFloatingScore(target.x, target.y + target.radius + 20, stickPts);
+            this.spawnFloatingScore(target.x, target.y + target.radius + 20, stickPts, '#38bdf8');
 
             this.updateHUD();
             if (window.GameAudio) window.GameAudio.playKnifeStick();
@@ -437,6 +473,16 @@
                 if (window.GameAudio) window.GameAudio.playKnifeLevelClear();
                 this.spawnTargetShatter();
 
+                // Bonus Life Recovery on Boss / Milestone Stages (every 4 levels)
+                if (level % 4 === 0 && lives < maxLives) {
+                    lives++;
+                    self.renderLivesHUD();
+                    self.spawnFloatingScore(target.x, target.y, '❤ +1 Life Restored!', '#34d399');
+                    if (window.GameAudio && window.GameAudio.playPowerUpCollect) {
+                        window.GameAudio.playPowerUpCollect();
+                    }
+                }
+
                 setTimeout(function() {
                     self.loadLevel(level + 1);
                 }, 520);
@@ -445,20 +491,56 @@
 
         handleCollision: function() {
             var self = this;
-            target.shake = 1.0;
+            target.shake = 1.3;
 
-            if (flyingKnife) {
-                flyingKnife.shattered = true;
-                flyingKnife.vx = (Math.random() - 0.5) * 260;
-                this.spawnSparks(flyingKnife.x, flyingKnife.y, '#f43f5e', 14);
+            if (lives > 1) {
+                // Heart lost - player continues!
+                lives--;
+                this.renderLivesHUD();
+                knivesInStack++; // Refund knife so stage is still beatable
+                this.renderKnifeStackHUD();
+
+                if (flyingKnife) {
+                    flyingKnife.shattered = true;
+                    flyingKnife.vx = (Math.random() - 0.5) * 300;
+                    this.spawnSparks(flyingKnife.x, flyingKnife.y, '#f43f5e', 14);
+                    this.spawnShockwave(flyingKnife.x, flyingKnife.y);
+                }
+
+                this.spawnFloatingScore(target.x, target.y + target.radius + 30, '💔 -1 Life! (' + lives + ' left)', '#f43f5e');
+
+                if (window.GameAudio) {
+                    window.GameAudio.playKnifeClank();
+                    if (window.GameAudio.playLifeLost) window.GameAudio.playLifeLost();
+                }
+
+                // Short cooldown so player doesn't spam into the same spot
+                isThrowCooldown = true;
+                setTimeout(function() {
+                    isThrowCooldown = false;
+                    flyingKnife = null;
+                }, 400);
+            } else {
+                // Final life lost - Game Over
+                lives = 0;
+                this.renderLivesHUD();
+
+                if (flyingKnife) {
+                    flyingKnife.shattered = true;
+                    flyingKnife.vx = (Math.random() - 0.5) * 260;
+                    this.spawnSparks(flyingKnife.x, flyingKnife.y, '#f43f5e', 16);
+                }
+
+                if (window.GameAudio) {
+                    window.GameAudio.playKnifeClank();
+                    if (window.GameAudio.playLifeLost) window.GameAudio.playLifeLost();
+                }
+
+                // Hit-Stop pause before Game Over modal
+                setTimeout(function() {
+                    self.handleGameOver();
+                }, 380);
             }
-
-            if (window.GameAudio) window.GameAudio.playKnifeClank();
-
-            // Hit-Stop pause before Game Over modal
-            setTimeout(function() {
-                self.handleGameOver();
-            }, 350);
         },
 
         handleGameOver: function() {
@@ -550,11 +632,12 @@
             }
         },
 
-        spawnFloatingScore: function(x, y, points) {
+        spawnFloatingScore: function(x, y, text, color) {
             floatingScores.push({
                 x: x,
                 y: y,
-                text: '+' + points,
+                text: (typeof text === 'number' ? '+' + text : text),
+                color: color || '#38bdf8',
                 alpha: 1.0
             });
         },
@@ -694,8 +777,8 @@
                     ctx.lineWidth = 2.5;
 
                     ctx.beginPath();
-                    // Draw arc around (0, R)
-                    ctx.arc(0, 0, target.radius + 6, -obstacles[o].width, obstacles[o].width);
+                    // Draw arc around bottom (+Y / Math.PI / 2 in canvas angles) matching local angle 0
+                    ctx.arc(0, 0, target.radius + 6, Math.PI / 2 - obstacles[o].width, Math.PI / 2 + obstacles[o].width);
                     ctx.lineTo(0, 0);
                     ctx.closePath();
                     ctx.fill();
@@ -832,8 +915,8 @@
                 ctx.globalAlpha = Math.max(0, fs.alpha);
                 ctx.font = 'bold 17px Outfit, sans-serif';
                 ctx.textAlign = 'center';
-                ctx.fillStyle = '#38bdf8';
-                ctx.shadowColor = '#38bdf8';
+                ctx.fillStyle = fs.color || '#38bdf8';
+                ctx.shadowColor = fs.color || '#38bdf8';
                 ctx.shadowBlur = 8;
                 ctx.fillText(fs.text, fs.x, fs.y);
                 ctx.restore();

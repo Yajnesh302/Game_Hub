@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neon Pong Duel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+        body {
+            background: #060b18;
+            color: #f8fafc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 800px;
+            padding: 10px 20px;
+            background: rgba(15, 23, 42, 0.65);
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+        }
+
+        .score-display {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 4px;
+        }
+
+        .role-indicator {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        #gameCanvas {
+            background: #020617;
+            border: 2px solid #334155;
+            border-radius: 16px;
+            box-shadow: 0 0 40px rgba(56, 189, 248, 0.15);
+            max-width: 100%;
+            touch-action: none;
+        }
+
+        .controls-hint {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: #94a3b8;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="player-info" style="color: #38bdf8;">
+            <span>🔵</span>
+            <span id="p1-label">Player 1 (Left)</span>
+            <span id="p1-role-badge" class="role-indicator" style="background: rgba(56, 189, 248, 0.2); border: 1px solid #38bdf8; display: none;">YOU</span>
+        </div>
+        <div class="score-display">
+            <span id="p1-score" style="color: #38bdf8;">0</span>
+            <span style="color: #64748b; margin: 0 4px;">:</span>
+            <span id="p2-score" style="color: #f43f5e;">0</span>
+        </div>
+        <div class="player-info" style="color: #f43f5e;">
+            <span id="p2-role-badge" class="role-indicator" style="background: rgba(244, 63, 94, 0.2); border: 1px solid #f43f5e; display: none;">YOU</span>
+            <span id="p2-label">Player 2 (Right)</span>
+            <span>🔴</span>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
+
+    <div class="controls-hint" id="hint-text">
+        🎮 Move your paddle with <strong>Mouse</strong>, <strong>Touch</strong>, or <strong>W/S / Up/Down Keys</strong>. First to 7 points wins!
+    </div>
+
+    <script>
+        (function() {
+            var canvas = document.getElementById('gameCanvas');
+            var ctx = canvas.getContext('2d');
+            var bridge = window.parent.GameHubBridge || window.GameHubBridge;
+
+            var W = canvas.width;
+            var H = canvas.height;
+
+            var PADDLE_W = 14;
+            var PADDLE_H = 90;
+            var BALL_R = 7.5;
+            var WIN_SCORE = 7;
+
+            var p1Y = H / 2 - PADDLE_H / 2;
+            var p2Y = H / 2 - PADDLE_H / 2;
+
+            var ballX = W / 2;
+            var ballY = H / 2;
+            var ballVx = 380;
+            var ballVy = 180;
+
+            var score1 = 0;
+            var score2 = 0;
+            var isGameOver = false;
+
+            var isMultiplayer = bridge && bridge.isMultiplayer;
+
+            var p1Label = document.getElementById('p1-label');
+            var p2Label = document.getElementById('p2-label');
+            var p1RoleBadge = document.getElementById('p1-role-badge');
+            var p2RoleBadge = document.getElementById('p2-role-badge');
+            var p1ScoreEl = document.getElementById('p1-score');
+            var p2ScoreEl = document.getElementById('p2-score');
+            var hintText = document.getElementById('hint-text');
+
+            var lastSyncSendTime = 0;
+            var lastPaddleSendTime = 0;
+
+            function getMyRole() {
+                if (!bridge) return 1;
+                return bridge.myPlayerNumber || 1;
+            }
+
+            function updateUI() {
+                var myNum = getMyRole();
+
+                if (isMultiplayer) {
+                    var p1Name = (bridge && bridge.player1Name) ? bridge.player1Name : "Player 1";
+                    var p2Name = (bridge && bridge.player2Name) ? bridge.player2Name : "Player 2";
+
+                    p1Label.textContent = p1Name + " (Blue)";
+                    p2Label.textContent = p2Name + " (Pink)";
+
+                    if (myNum === 1) {
+                        p1RoleBadge.style.display = 'inline-block';
+                        p2RoleBadge.style.display = 'none';
+                        hintText.innerHTML = '🔵 <strong>YOU ARE PLAYER 1 (Left Blue Paddle)</strong>. Move with Mouse, Touch, or W/S / Up/Down keys.';
+                    } else {
+                        p1RoleBadge.style.display = 'none';
+                        p2RoleBadge.style.display = 'inline-block';
+                        hintText.innerHTML = '🔴 <strong>YOU ARE PLAYER 2 (Right Pink Paddle)</strong>. Move with Mouse, Touch, or W/S / Up/Down keys.';
+                    }
+                } else {
+                    p1Label.textContent = (bridge ? bridge.getPlayerName() : "You") + " (Blue)";
+                    p2Label.textContent = "LAN Bot AI (Pink)";
+                    p1RoleBadge.style.display = 'inline-block';
+                    p2RoleBadge.style.display = 'none';
+                }
+            }
+
+            updateUI();
+
+            // Multiplayer SignalR Bridge Listeners
+            if (isMultiplayer && bridge) {
+                if (typeof bridge.onRoleAssigned === 'function') {
+                    bridge.onRoleAssigned(function(role) {
+                        updateUI();
+                    });
+                }
+
+                bridge.onData(function(payload) {
+                    if (!payload) return;
+                    var myNum = getMyRole();
+
+                    if (payload.type === 'sync' && myNum === 2) {
+                        // Soft reconciliation for Player 2
+                        p1Y = payload.p1Y;
+                        score1 = payload.s1;
+                        score2 = payload.s2;
+                        updateScoreUI();
+
+                        // If ball drifted significantly, softly correct
+                        var dist = Math.sqrt((ballX - payload.bx) * (ballX - payload.bx) + (ballY - payload.by) * (ballY - payload.by));
+                        if (dist > 45) {
+                            ballX = payload.bx;
+                            ballY = payload.by;
+                            ballVx = payload.bvx;
+                            ballVy = payload.bvy;
+                        }
+                    } else if (payload.type === 'goal') {
+                        // Authoritative goal from host
+                        score1 = payload.s1;
+                        score2 = payload.s2;
+                        ballX = payload.bx;
+                        ballY = payload.by;
+                        ballVx = payload.bvx;
+                        ballVy = payload.bvy;
+                        updateScoreUI();
+                    } else if (payload.type === 'paddle' && myNum === 1) {
+                        // Player 1 receives Player 2 paddle movement
+                        p2Y = payload.p2Y;
+                    }
+                });
+
+                bridge.onPlayerJoined(function(data) {
+                    updateUI();
+                });
+            }
+
+            // Paddle Movement (Mouse & Touch)
+            function updateLocalPaddle(clientY) {
+                var rect = canvas.getBoundingClientRect();
+                var relY = (clientY - rect.top) * (H / rect.height);
+                var py = Math.max(10, Math.min(H - PADDLE_H - 10, relY - PADDLE_H / 2));
+
+                var myNum = getMyRole();
+
+                if (myNum === 1) {
+                    p1Y = py;
+                } else {
+                    p2Y = py;
+                    var now = performance.now();
+                    if (isMultiplayer && bridge && (now - lastPaddleSendTime > 40)) {
+                        lastPaddleSendTime = now;
+                        bridge.sendData({ type: 'paddle', p2Y: p2Y });
+                    }
+                }
+            }
+
+            canvas.addEventListener('mousemove', function(e) {
+                updateLocalPaddle(e.clientY);
+            });
+
+            canvas.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                if (e.touches.length > 0) {
+                    updateLocalPaddle(e.touches[0].clientY);
+                }
+            }, { passive: false });
+
+            // Keyboard Controls
+            var keys = {};
+            window.addEventListener('keydown', function(e) { keys[e.key] = true; });
+            window.addEventListener('keyup', function(e) { keys[e.key] = false; });
+
+            function updateScoreUI() {
+                p1ScoreEl.textContent = score1;
+                p2ScoreEl.textContent = score2;
+            }
+
+            function resetBall(direction) {
+                ballX = W / 2;
+                ballY = H / 2;
+                ballVx = (direction || 1) * 380;
+                ballVy = (Math.random() * 240 - 120);
+
+                var myNum = getMyRole();
+                if (isMultiplayer && bridge && myNum === 1) {
+                    bridge.sendData({
+                        type: 'goal',
+                        s1: score1,
+                        s2: score2,
+                        bx: ballX,
+                        by: ballY,
+                        bvx: ballVx,
+                        bvy: ballVy
+                    });
+                }
+            }
+
+            var lastTime = performance.now();
+
+            function loop(now) {
+                var dt = Math.min(32, now - lastTime) / 1000;
+                lastTime = now;
+
+                var myNum = getMyRole();
+
+                if (!isGameOver) {
+                    // Keyboard input
+                    if (keys['w'] || keys['W'] || keys['ArrowUp']) {
+                        if (myNum === 1) {
+                            p1Y = Math.max(10, p1Y - 480 * dt);
+                        } else {
+                            p2Y = Math.max(10, p2Y - 480 * dt);
+                            if (isMultiplayer && bridge && (now - lastPaddleSendTime > 40)) {
+                                lastPaddleSendTime = now;
+                                bridge.sendData({ type: 'paddle', p2Y: p2Y });
+                            }
+                        }
+                    }
+                    if (keys['s'] || keys['S'] || keys['ArrowDown']) {
+                        if (myNum === 1) {
+                            p1Y = Math.min(H - PADDLE_H - 10, p1Y + 480 * dt);
+                        } else {
+                            p2Y = Math.min(H - PADDLE_H - 10, p2Y + 480 * dt);
+                            if (isMultiplayer && bridge && (now - lastPaddleSendTime > 40)) {
+                                lastPaddleSendTime = now;
+                                bridge.sendData({ type: 'paddle', p2Y: p2Y });
+                            }
+                        }
+                    }
+
+                    // Bot AI in Single Player mode
+                    if (!isMultiplayer) {
+                        var targetY = ballY - PADDLE_H / 2;
+                        p2Y += (targetY - p2Y) * Math.min(1.0, 7.5 * dt);
+                        p2Y = Math.max(10, Math.min(H - PADDLE_H - 10, p2Y));
+                    }
+
+                    // Real-time Ball Physics (Active on BOTH Player 1 and Player 2 screens!)
+                    ballX += ballVx * dt;
+                    ballY += ballVy * dt;
+
+                    // Wall Bounces (Top / Bottom)
+                    if (ballY - BALL_R <= 0) {
+                        ballY = BALL_R;
+                        ballVy = Math.abs(ballVy);
+                    } else if (ballY + BALL_R >= H) {
+                        ballY = H - BALL_R;
+                        ballVy = -Math.abs(ballVy);
+                    }
+
+                    // Left Paddle Collision (Player 1 - Blue)
+                    if (ballX - BALL_R <= 30 + PADDLE_W && ballX + BALL_R >= 30) {
+                        if (ballY >= p1Y && ballY <= p1Y + PADDLE_H) {
+                            ballX = 30 + PADDLE_W + BALL_R;
+                            var hitOffset = (ballY - (p1Y + PADDLE_H / 2)) / (PADDLE_H / 2);
+                            ballVx = Math.abs(ballVx) * 1.05; // speed up
+                            ballVy = hitOffset * 340;
+                        }
+                    }
+
+                    // Right Paddle Collision (Player 2 - Pink)
+                    if (ballX + BALL_R >= W - 30 - PADDLE_W && ballX - BALL_R <= W - 30) {
+                        if (ballY >= p2Y && ballY <= p2Y + PADDLE_H) {
+                            ballX = W - 30 - PADDLE_W - BALL_R;
+                            var hitOffset = (ballY - (p2Y + PADDLE_H / 2)) / (PADDLE_H / 2);
+                            ballVx = -Math.abs(ballVx) * 1.05; // speed up
+                            ballVy = hitOffset * 340;
+                        }
+                    }
+
+                    // Goal Check (Evaluated authoritatively by Player 1 or Solo Host)
+                    if (!isMultiplayer || myNum === 1) {
+                        if (ballX < 0) {
+                            score2++;
+                            updateScoreUI();
+                            if (score2 >= WIN_SCORE) {
+                                handleWin(2);
+                            } else {
+                                resetBall(1);
+                            }
+                        } else if (ballX > W) {
+                            score1++;
+                            updateScoreUI();
+                            if (score1 >= WIN_SCORE) {
+                                handleWin(1);
+                            } else {
+                                resetBall(-1);
+                            }
+                        }
+
+                        // Periodic Sync Broadcast (20 Hz / every 50ms) to keep Player 2 tightly aligned
+                        if (isMultiplayer && bridge && (now - lastSyncSendTime > 50)) {
+                            lastSyncSendTime = now;
+                            bridge.sendData({
+                                type: 'sync',
+                                bx: ballX,
+                                by: ballY,
+                                bvx: ballVx,
+                                bvy: ballVy,
+                                p1Y: p1Y,
+                                s1: score1,
+                                s2: score2
+                            });
+                        }
+                    }
+                }
+
+                render();
+                requestAnimationFrame(loop);
+            }
+
+            function handleWin(winnerPlayerNum) {
+                isGameOver = true;
+                if (isMultiplayer && bridge) {
+                    bridge.finishGame(winnerPlayerNum);
+                } else {
+                    var isMe = (winnerPlayerNum === 1);
+                    alert(isMe ? "Victory! You won the match!" : "Defeated! LAN Bot won.");
+                }
+            }
+
+            function render() {
+                ctx.clearRect(0, 0, W, H);
+
+                // Background
+                ctx.fillStyle = '#020617';
+                ctx.fillRect(0, 0, W, H);
+
+                // Center Line
+                ctx.strokeStyle = 'rgba(51, 65, 85, 0.6)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([8, 8]);
+                ctx.beginPath();
+                ctx.moveTo(W / 2, 10);
+                ctx.lineTo(W / 2, H - 10);
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Center Circle
+                ctx.strokeStyle = 'rgba(51, 65, 85, 0.4)';
+                ctx.beginPath();
+                ctx.arc(W / 2, H / 2, 60, 0, Math.PI * 2);
+                ctx.stroke();
+
+                var myNum = getMyRole();
+
+                // Player 1 Paddle (Cyan/Blue - Left)
+                ctx.save();
+                ctx.fillStyle = '#38bdf8';
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = (myNum === 1) ? 22 : 10;
+                ctx.beginPath();
+                ctx.roundRect(30, p1Y, PADDLE_W, PADDLE_H, 6);
+                ctx.fill();
+
+                if (myNum === 1) {
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillStyle = '#38bdf8';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('YOU (P1)', 30 + PADDLE_W / 2, Math.max(14, p1Y - 8));
+                }
+                ctx.restore();
+
+                // Player 2 Paddle (Pink/Red - Right)
+                ctx.save();
+                ctx.fillStyle = '#f43f5e';
+                ctx.shadowColor = '#f43f5e';
+                ctx.shadowBlur = (myNum === 2) ? 22 : 10;
+                ctx.beginPath();
+                ctx.roundRect(W - 30 - PADDLE_W, p2Y, PADDLE_W, PADDLE_H, 6);
+                ctx.fill();
+
+                if (myNum === 2) {
+                    ctx.font = 'bold 11px sans-serif';
+                    ctx.fillStyle = '#f43f5e';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('YOU (P2)', W - 30 - PADDLE_W / 2, Math.max(14, p2Y - 8));
+                }
+                ctx.restore();
+
+                // Ball (Glowing White/Yellow)
+                ctx.save();
+                ctx.fillStyle = '#ffffff';
+                ctx.shadowColor = '#facc15';
+                ctx.shadowBlur = 16;
+                ctx.beginPath();
+                ctx.arc(ballX, ballY, BALL_R, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
+
+            requestAnimationFrame(loop);
+        })();
+    </script>
+</body>
+</html>

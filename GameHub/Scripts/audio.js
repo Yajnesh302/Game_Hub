@@ -786,6 +786,1011 @@
                 osc.start(ac.currentTime + idx * 0.08);
                 osc.stop(ac.currentTime + idx * 0.08 + 0.1);
             });
+        },
+
+        // Archery Sound Effects
+        playBowDraw: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(80, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(220, ac.currentTime + 0.35);
+
+            gain.gain.setValueAtTime(0.08, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.35);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start();
+            osc.stop(ac.currentTime + 0.35);
+        },
+
+        playBowRelease: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            // Bowstring Twang (Sharp snap with vibrating decay)
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(480, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(110, ac.currentTime + 0.22);
+
+            gain.gain.setValueAtTime(0.35, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.22);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start();
+            osc.stop(ac.currentTime + 0.22);
+        },
+
+        playArrowWhoosh: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(320, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(160, ac.currentTime + 0.18);
+
+            gain.gain.setValueAtTime(0.15, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start();
+            osc.stop(ac.currentTime + 0.18);
+        },
+
+        playTargetHit: function(isBullseye, isXRing) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            // 1. Heavy Solid Target Impact Thud
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(180, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(45, ac.currentTime + 0.16);
+
+            gain.gain.setValueAtTime(0.5, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.16);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start();
+            osc.stop(ac.currentTime + 0.16);
+
+            // 2. High Resonance Ring for Bullseyes (10 or 10X)
+            if (isBullseye || isXRing) {
+                var notes = isXRing ? [880, 1174.66, 1760] : [783.99, 1046.50];
+                notes.forEach(function(freq, idx) {
+                    var bOsc = ac.createOscillator();
+                    var bGain = ac.createGain();
+
+                    bOsc.type = 'sine';
+                    bOsc.frequency.setValueAtTime(freq, ac.currentTime + 0.04 + idx * 0.05);
+
+                    bGain.gain.setValueAtTime(0.2, ac.currentTime + 0.04 + idx * 0.05);
+                    bGain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.04 + idx * 0.05 + 0.45);
+
+                    bOsc.connect(bGain);
+                    bGain.connect(ac.destination);
+
+                    bOsc.start(ac.currentTime + 0.04 + idx * 0.05);
+                    bOsc.stop(ac.currentTime + 0.04 + idx * 0.05 + 0.45);
+                });
+            }
+        },
+
+        playCrowdCheer: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50].forEach(function(freq, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, ac.currentTime + idx * 0.06);
+
+                gain.gain.setValueAtTime(0.18, ac.currentTime + idx * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.06 + 0.6);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.06);
+                osc.stop(ac.currentTime + idx * 0.06 + 0.6);
+            });
+        },
+
+        /* Speed Math Synthesized Sound Suite */
+        playMathCorrect: function(streak) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var baseFreq = 440 * Math.pow(1.05946, Math.min(12, (streak || 0) * 2));
+            var freqs = [baseFreq, baseFreq * 1.25, baseFreq * 1.5];
+
+            freqs.forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.04);
+
+                gain.gain.setValueAtTime(0.2, ac.currentTime + idx * 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.04 + 0.22);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.04);
+                osc.stop(ac.currentTime + idx * 0.04 + 0.22);
+            });
+        },
+
+        playMathWrong: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(160, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(90, ac.currentTime + 0.28);
+
+            gain.gain.setValueAtTime(0.25, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.28);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.28);
+        },
+
+        playMathStreak: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [587.33, 739.99, 880.00, 1174.66].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.05);
+
+                gain.gain.setValueAtTime(0.22, ac.currentTime + idx * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.05 + 0.35);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.05);
+                osc.stop(ac.currentTime + idx * 0.05 + 0.35);
+            });
+        },
+
+        playMathCountdown: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(880, ac.currentTime);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.06);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.06);
+        },
+
+        /* Sling Puck Synthesized Sound Suite */
+        playSlingPull: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(140, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(260, ac.currentTime + 0.12);
+
+            gain.gain.setValueAtTime(0.08, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.12);
+        },
+
+        playSlingSnap: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(480, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(80, ac.currentTime + 0.14);
+
+            gain.gain.setValueAtTime(0.3, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.14);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.14);
+        },
+
+        playPuckClack: function(velocity) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var vol = Math.min(0.28, Math.max(0.06, (velocity || 200) / 1200));
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(620 + Math.random() * 120, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(180, ac.currentTime + 0.05);
+
+            gain.gain.setValueAtTime(vol, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.05);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.05);
+        },
+
+        playGatePass: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [587.33, 880.00, 1174.66].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.03);
+
+                gain.gain.setValueAtTime(0.18, ac.currentTime + idx * 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.03 + 0.18);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.03);
+                osc.stop(ac.currentTime + idx * 0.03 + 0.18);
+            });
+        },
+
+        /* Dots and Boxes Sound Suite */
+        playLineDraw: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(420, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(780, ac.currentTime + 0.08);
+
+            gain.gain.setValueAtTime(0.15, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.08);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.08);
+        },
+
+        playBoxCapture: function(comboCount) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var baseFreq = (comboCount > 1) ? 659.25 : 523.25;
+            var chords = [baseFreq, baseFreq * 1.25, baseFreq * 1.5];
+
+            chords.forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ac.currentTime);
+
+                gain.gain.setValueAtTime(0.12, ac.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.28);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.02);
+                osc.stop(ac.currentTime + 0.3);
+            });
+        },
+
+        playChainCombo: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.05);
+
+                gain.gain.setValueAtTime(0.2, ac.currentTime + idx * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.05 + 0.35);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.05);
+                osc.stop(ac.currentTime + idx * 0.05 + 0.35);
+            });
+        },
+
+        /* Codebreaker / Mastermind Sound Suite */
+        playPegPlace: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(520, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(780, ac.currentTime + 0.06);
+
+            gain.gain.setValueAtTime(0.14, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.06);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.06);
+        },
+
+        playCodeScan: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(880, ac.currentTime + 0.22);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.22);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.22);
+        },
+
+        playKeyPegPop: function(isExact) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(isExact ? 880 : 587.33, ac.currentTime);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.08);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.08);
+        },
+
+        playCipherSolved: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.06);
+
+                gain.gain.setValueAtTime(0.2, ac.currentTime + idx * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.06 + 0.45);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.06);
+                osc.stop(ac.currentTime + idx * 0.06 + 0.45);
+            });
+        },
+
+        /* Memory Matrix / Cyber Recall Sound Suite */
+        playMemoryFlash: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(320, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(640, ac.currentTime + 0.18);
+
+            gain.gain.setValueAtTime(0.15, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.18);
+        },
+
+        playMemoryCorrect: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(660, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1320, ac.currentTime + 0.08);
+
+            gain.gain.setValueAtTime(0.16, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.08);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.08);
+        },
+
+        playMemoryError: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(140, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(90, ac.currentTime + 0.15);
+
+            gain.gain.setValueAtTime(0.18, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.15);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.15);
+        },
+
+        playMemoryRoundClear: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.05);
+
+                gain.gain.setValueAtTime(0.18, ac.currentTime + idx * 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.05 + 0.28);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.05);
+                osc.stop(ac.currentTime + idx * 0.05 + 0.28);
+            });
+        },
+
+        /* Laser & Mirrors / Photon Flow Sound Suite */
+        playMirrorRotate: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(440, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(880, ac.currentTime + 0.06);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.06);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.06);
+        },
+
+        playCrystalPower: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [659.25, 830.61, 1046.50, 1318.51].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.03);
+
+                gain.gain.setValueAtTime(0.15, ac.currentTime + idx * 0.03);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.03 + 0.35);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.03);
+                osc.stop(ac.currentTime + idx * 0.03 + 0.35);
+            });
+        },
+
+        playLaserPulse: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(300, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(1200, ac.currentTime + 0.12);
+
+            gain.gain.setValueAtTime(0.1, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.12);
+        },
+
+        playOpticsWin: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.06);
+
+                gain.gain.setValueAtTime(0.2, ac.currentTime + idx * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.06 + 0.45);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.06);
+                osc.stop(ac.currentTime + idx * 0.06 + 0.45);
+            });
+        },
+
+        /* AlgoBot: Maze Runner & Pathfinding Sound Suite */
+        playBotStep: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(320, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(160, ac.currentTime + 0.05);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.05);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.05);
+        },
+
+        playBotTurn: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(520, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(780, ac.currentTime + 0.06);
+
+            gain.gain.setValueAtTime(0.1, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.06);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.06);
+        },
+
+        playBotJump: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(240, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(600, ac.currentTime + 0.1);
+
+            gain.gain.setValueAtTime(0.14, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.1);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.1);
+        },
+
+        playBotCollect: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [659.25, 880.00, 1318.51].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.04);
+
+                gain.gain.setValueAtTime(0.15, ac.currentTime + idx * 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.04 + 0.2);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.04);
+                osc.stop(ac.currentTime + idx * 0.04 + 0.2);
+            });
+        },
+
+        playBotCrash: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(180, ac.currentTime);
+            osc.frequency.linearRampToValueAtTime(60, ac.currentTime + 0.18);
+
+            gain.gain.setValueAtTime(0.2, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.18);
+        },
+
+        playAlgoVictory: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50, 1318.51].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.06);
+
+                gain.gain.setValueAtTime(0.2, ac.currentTime + idx * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.06 + 0.4);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.06);
+                osc.stop(ac.currentTime + idx * 0.06 + 0.4);
+            });
+        },
+
+        // Wordle / Word Duel Synthesizers
+        playKeyType: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(320, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(140, ac.currentTime + 0.04);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.04);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.04);
+        },
+
+        playLetterFlip: function(tileIndex) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var notes = [440, 493.88, 554.37, 659.25, 739.99, 880];
+            var freq = notes[(tileIndex || 0) % notes.length];
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq * 1.02, ac.currentTime + 0.12);
+
+            gain.gain.setValueAtTime(0.15, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.12);
+        },
+
+        playWordInvalid: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc1 = ac.createOscillator();
+            var osc2 = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc1.type = 'sawtooth';
+            osc2.type = 'sawtooth';
+            osc1.frequency.setValueAtTime(140, ac.currentTime);
+            osc2.frequency.setValueAtTime(148, ac.currentTime);
+
+            gain.gain.setValueAtTime(0.18, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.18);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ac.destination);
+
+            osc1.start(ac.currentTime);
+            osc2.start(ac.currentTime);
+            osc1.stop(ac.currentTime + 0.18);
+            osc2.stop(ac.currentTime + 0.18);
+        },
+
+        playWordVictory: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            [523.25, 659.25, 783.99, 1046.50, 1318.51, 1567.98].forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.08);
+
+                gain.gain.setValueAtTime(0.22, ac.currentTime + idx * 0.08);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.08 + 0.5);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.08);
+                osc.stop(ac.currentTime + idx * 0.08 + 0.5);
+            });
+        },
+
+        // ==========================================
+        // Lights Out / Quantum Switch Synthesizers
+        // ==========================================
+        playQuantumNodeToggle: function(isOn) {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var subOsc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'triangle';
+            subOsc.type = 'sine';
+
+            var baseFreq = isOn ? 587.33 : 329.63; // D5 vs E4
+            var subFreq = isOn ? 880.00 : 220.00;
+
+            osc.frequency.setValueAtTime(baseFreq, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(baseFreq * (isOn ? 1.2 : 0.8), ac.currentTime + 0.09);
+
+            subOsc.frequency.setValueAtTime(subFreq, ac.currentTime);
+
+            gain.gain.setValueAtTime(0.18, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.12);
+
+            osc.connect(gain);
+            subOsc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            subOsc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.12);
+            subOsc.stop(ac.currentTime + 0.12);
+        },
+
+        playQuantumSolveFanfare: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            // Quantum harmonic ascending cascade
+            var notes = [440, 554.37, 659.25, 880, 1108.73, 1318.51, 1760];
+            notes.forEach(function(f, idx) {
+                var osc = ac.createOscillator();
+                var gain = ac.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(f, ac.currentTime + idx * 0.06);
+
+                gain.gain.setValueAtTime(0.24, ac.currentTime + idx * 0.06);
+                gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + idx * 0.06 + 0.6);
+
+                osc.connect(gain);
+                gain.connect(ac.destination);
+
+                osc.start(ac.currentTime + idx * 0.06);
+                osc.stop(ac.currentTime + idx * 0.06 + 0.6);
+            });
+        },
+
+        playQuantumHintChime: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc1 = ac.createOscillator();
+            var osc2 = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc1.type = 'sine';
+            osc2.type = 'triangle';
+
+            osc1.frequency.setValueAtTime(880, ac.currentTime);
+            osc2.frequency.setValueAtTime(1320, ac.currentTime);
+
+            gain.gain.setValueAtTime(0.18, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.35);
+
+            osc1.connect(gain);
+            osc2.connect(gain);
+            gain.connect(ac.destination);
+
+            osc1.start(ac.currentTime);
+            osc2.start(ac.currentTime);
+            osc1.stop(ac.currentTime + 0.35);
+            osc2.stop(ac.currentTime + 0.35);
+        },
+
+        playQuantumGridReset: function() {
+            if (isMuted) return;
+            var ac = getContext();
+            if (!ac) return;
+
+            var osc = ac.createOscillator();
+            var gain = ac.createGain();
+
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(600, ac.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(120, ac.currentTime + 0.2);
+
+            gain.gain.setValueAtTime(0.12, ac.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ac.currentTime + 0.2);
+
+            osc.connect(gain);
+            gain.connect(ac.destination);
+
+            osc.start(ac.currentTime);
+            osc.stop(ac.currentTime + 0.2);
         }
     };
 

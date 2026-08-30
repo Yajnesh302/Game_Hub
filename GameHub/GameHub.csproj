@@ -121,6 +121,24 @@
     <Content Include="Scripts\chessRules.js" />
     <Content Include="Scripts\chessBot.js" />
     <Content Include="Scripts\chess.js" />
+    <Content Include="Scripts\speedmath.js" />
+    <Content Include="Games\SpeedMath.aspx" />
+    <Content Include="Scripts\slingpuck.js" />
+    <Content Include="Games\SlingPuck.aspx" />
+    <Content Include="Scripts\dotsandboxes.js" />
+    <Content Include="Games\DotsAndBoxes.aspx" />
+    <Content Include="Scripts\codebreaker.js" />
+    <Content Include="Games\Codebreaker.aspx" />
+    <Content Include="Scripts\memorymatrix.js" />
+    <Content Include="Games\MemoryMatrix.aspx" />
+    <Content Include="Scripts\lasermirrors.js" />
+    <Content Include="Games\LaserMirrors.aspx" />
+    <Content Include="Scripts\algobot.js" />
+    <Content Include="Games\AlgoBot.aspx" />
+    <Content Include="Scripts\wordduel.js" />
+    <Content Include="Games\WordDuel.aspx" />
+    <Content Include="Scripts\lightsout.js" />
+    <Content Include="Games\LightsOut.aspx" />
     <Content Include="Site.Master" />
     <Content Include="Web.config" />
   </ItemGroup>
@@ -206,6 +224,69 @@
     </Compile>
     <Compile Include="Games\Chess.aspx.designer.cs">
       <DependentUpon>Chess.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\SpeedMath.aspx.cs">
+      <DependentUpon>SpeedMath.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\SpeedMath.aspx.designer.cs">
+      <DependentUpon>SpeedMath.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\SlingPuck.aspx.cs">
+      <DependentUpon>SlingPuck.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\SlingPuck.aspx.designer.cs">
+      <DependentUpon>SlingPuck.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\DotsAndBoxes.aspx.cs">
+      <DependentUpon>DotsAndBoxes.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\DotsAndBoxes.aspx.designer.cs">
+      <DependentUpon>DotsAndBoxes.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\Codebreaker.aspx.cs">
+      <DependentUpon>Codebreaker.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\Codebreaker.aspx.designer.cs">
+      <DependentUpon>Codebreaker.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\MemoryMatrix.aspx.cs">
+      <DependentUpon>MemoryMatrix.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\MemoryMatrix.aspx.designer.cs">
+      <DependentUpon>MemoryMatrix.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\LaserMirrors.aspx.cs">
+      <DependentUpon>LaserMirrors.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\LaserMirrors.aspx.designer.cs">
+      <DependentUpon>LaserMirrors.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\AlgoBot.aspx.cs">
+      <DependentUpon>AlgoBot.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\AlgoBot.aspx.designer.cs">
+      <DependentUpon>AlgoBot.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\WordDuel.aspx.cs">
+      <DependentUpon>WordDuel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\WordDuel.aspx.designer.cs">
+      <DependentUpon>WordDuel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Games\LightsOut.aspx.cs">
+      <DependentUpon>LightsOut.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Games\LightsOut.aspx.designer.cs">
+      <DependentUpon>LightsOut.aspx</DependentUpon>
     </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
